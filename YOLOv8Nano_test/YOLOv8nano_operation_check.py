@@ -1,4 +1,4 @@
-# pip install ultralyticsをしたらこのコードは実行可能なはず
+# pip install ultralytics opencv-python　をしたらこのコードは実行可能なはず
 """
 YOLOv8nanoを利用した画像内検知を行う
 検知したオブジェクトとその信頼性, 座標を標準出力に返す
