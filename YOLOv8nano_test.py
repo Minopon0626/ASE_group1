@@ -1,3 +1,4 @@
+# pip install ultralyticsをしたらこのコードは実行可能なはず
 from ultralytics import YOLO
 
 # YOLOv8モデルをロード
