@@ -5,12 +5,16 @@ YOLOv8nanoを利用した画像内検知を行う
 """
 
 from ultralytics import YOLO
+import file_path_finder
+import create_or_find_output
 
 # YOLOv8モデルをロード
 model = YOLO("yolov8n.pt")  # ここで適切なモデルを指定します。例えば、yolov8n.pt（Nanoモデル）
 
 # 画像を読み込む
-image_path = "D:\\vscodeWorkSpace\\ASE_group1\\photo_test_0.jpeg"  # ここで入力画像のパスを指定します
+image_name = "photo_test_0.jpeg"
+
+image_path = file_path_finder.find_file_in_current_directory(image_name)  # ここで入力画像のパスを指定します
 results = model.predict(source=image_path)
 
 # 検出結果を処理

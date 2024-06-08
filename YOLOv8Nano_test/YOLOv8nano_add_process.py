@@ -5,12 +5,16 @@ YOLOv8nanoを利用して検知した後に検知する
 """
 from ultralytics import YOLO
 import cv2
+import file_path_finder
+import create_or_find_output
 
 # YOLOv8モデルをロード
 model = YOLO("yolov8n.pt")  # ここで適切なモデルを指定します。例えば、yolov8n.pt（Nanoモデル）
 
 # 画像を読み込む
-image_path = "D:\\vscodeWorkSpace\\ASE_group1\\photo_test_0.jpeg"  # ここで入力画像のパスを指定します
+image_name = "photo_test_0.jpeg"
+
+image_path = file_path_finder.find_file_in_current_directory(image_name)  # ここで入力画像のパスを指定します
 image = cv2.imread(image_path)
 
 # 画像に対して予測を行う
@@ -38,8 +42,8 @@ for result in results:
         cv2.putText(image, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
 # 結果画像を保存または表示
-output_path = "D:\\vscodeWorkSpace\\ASE_group1\\output_photo_test_0.jpeg"
-cv2.imwrite(output_path, image)
+output_dir = create_or_find_output.create_or_find_output_dir()
+cv2.imwrite(output_dir, image)
 cv2.imshow("Detected Objects", image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
