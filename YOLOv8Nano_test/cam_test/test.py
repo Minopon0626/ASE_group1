@@ -1,11 +1,24 @@
-from picamera2 import Picamera2, Preview
-import time
+# sudo apt update
+# sudo apt install python3-opencv
 
-picam2 = Picamera2()
-camera_config = picam2.create_preview_configuration()
-picam2.configure(camera_config)
-picam2.start_preview(Preview.QTGL)
-picam2.start()
-time.sleep(2)
-picam2.capture_file("test.jpg")
-picam2.close()
+import cv2
+
+# カメラデバイスの初期化（通常はデバイスIDが0になります）
+cap = cv2.VideoCapture(0)
+
+if not cap.isOpened():
+    print("カメラデバイスを開けませんでした")
+    exit()
+
+# フレームをキャプチャ
+ret, frame = cap.read()
+
+if ret:
+    # 画像を保存
+    cv2.imwrite('captured_image.jpg', frame)
+    print("画像を保存しました: captured_image.jpg")
+else:
+    print("フレームのキャプチャに失敗しました")
+
+# カメラデバイスを解放
+cap.release()
