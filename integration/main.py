@@ -3,6 +3,7 @@ import os
 from photographing import capture_image
 from ImageDetection import yolo_detect_and_cut
 import create_or_find_output
+import Infrared_rays_send
 
 def main():
     # ディレクトリが存在しない場合は作成
@@ -21,6 +22,8 @@ def main():
             
             # YOLO検出を実行し、トリミングした画像をoutputディレクトリに保存
             yolo_detect_and_cut("captured_image.jpg")
+
+            Infrared_rays_send.send_ir_command()
         
         # 20秒待機
         time.sleep(20)
