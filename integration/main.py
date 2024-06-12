@@ -17,10 +17,10 @@ def main():
         if image_name:
             # 撮影した画像をcaptureディレクトリに移動
             captured_image_path = os.path.join(capture_dir, image_name)
-            os.rename(image_name, captured_image_path)
+            # os.rename(image_name, captured_image_path)
             
             # YOLO検出を実行し、トリミングした画像をoutputディレクトリに保存
-            yolo_detect_and_cut(captured_image_path)
+            yolo_detect_and_cut("captured_image.jpg")
         
         # 20秒待機
         time.sleep(20)
