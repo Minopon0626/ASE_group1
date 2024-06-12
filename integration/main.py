@@ -21,9 +21,12 @@ def main():
             # os.rename(image_name, captured_image_path)
             
             # YOLO検出を実行し、トリミングした画像をoutputディレクトリに保存
-            yolo_detect_and_cut("captured_image.jpg")
+            number_of_people = yolo_detect_and_cut("captured_image.jpg")
+            print(f"検出された人数: {number_of_people}")
 
-            Infrared_rays_send.send_ir_command()
+            # もし1人以上の人が検出されたらIRコマンドを送信
+            if number_of_people > 0:
+                Infrared_rays_send.send_ir_command()
         
         # 20秒待機
         time.sleep(20)

@@ -15,7 +15,7 @@ def yolo_detect_and_cut(image_name):
     image_path = file_path_finder.find_file_in_current_directory(image_name)  # ここで入力画像のパスを指定します
     if not image_path:
         print(f"{image_name} が見つかりませんでした")
-        return
+        return 0
 
     image = cv2.imread(image_path)
 
@@ -31,6 +31,7 @@ def yolo_detect_and_cut(image_name):
 
     # 検出結果を処理
     object_count = {}
+    person_detected = 0  # 人が検出されたかどうかを示すフラグ
     for result in results:
         boxes = result.boxes  # バウンディングボックスを取得
         for box in boxes:
@@ -47,6 +48,10 @@ def yolo_detect_and_cut(image_name):
                 object_count[class_name] = 0
             object_count[class_name] += 1
 
+            # 人が検出された場合のフラグを更新
+            if class_name == "person":
+                person_count += 1
+
             # バウンディングボックス部分を切り抜き
             cropped_image = image[y1:y2, x1:x2]
 
@@ -60,3 +65,5 @@ def yolo_detect_and_cut(image_name):
 
     # 全てのウィンドウを閉じる
     cv2.destroyAllWindows()
+
+    return person_detected  # 人が検出されたかどうかを返す
