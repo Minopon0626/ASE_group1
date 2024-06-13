@@ -1,0 +1,15 @@
+cam_testはカメラテストように作成したディレクトリ
+
+outputは画像を出力する際に出力先のディレクトリとするためのもの
+
+create_or_find_output.pyはディレクトリ名を指定してこのディレクトリ以下に指定されたディレクトリ名がない場合作成する
+
+file_path_finder.pyはファイルパスを見つけてくるプログラム
+
+photo_test_0.jpegは動作確認用の画像
+
+YOLOv8Nano_add_cutphoto.pyは検出した物体事にトリミングしてoutputに格納するディレクトリ。
+
+YOLOv8Nano_add_process.pyは検出したものを四角で囲むプログラム
+
+YOLOv8Nano_operation_check.pyはYOLOv8の動作確認用のプログラム。検知したものを標準出力に出力する
