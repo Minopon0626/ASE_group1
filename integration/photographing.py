@@ -1,6 +1,8 @@
 """
 関数が読みだされた際に一回撮影するpythonプログラム
+撮影して保存したファイルパスを返す
 """
+import os  # ファイルパスの操作に必要なライブラリをインポート
 import cv2  # OpenCVライブラリをインポートして、画像処理やカメラ操作を行う
 
 def capture_image():
@@ -18,9 +20,10 @@ def capture_image():
     if ret:
         # フレームのキャプチャに成功した場合
         # 画像を保存
-        cv2.imwrite('captured_image.jpg', frame)  # フレームを画像ファイルとして保存
-        print("画像を保存しました: captured_image.jpg")
-        return 'captured_image.jpg'  # 保存した画像のファイル名を返す
+        file_path = os.path.abspath('captured_image.jpg')  # 絶対パスを取得
+        cv2.imwrite(file_path, frame)  # フレームを画像ファイルとして保存
+        print(f"画像を保存しました: {file_path}")
+        return file_path  # 保存した画像のファイルパスを返す
     else:
         # フレームのキャプチャに失敗した場合
         print("フレームのキャプチャに失敗しました")
