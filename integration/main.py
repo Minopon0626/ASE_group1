@@ -9,9 +9,10 @@ def main():
     # ディレクトリが存在しない場合は作成
     capture_dir = 'capture'  # 画像を保存するためのディレクトリ名
     output_dir = 'output'  # 処理された画像を保存するためのディレクトリ名
-    create_or_find_output.create_or_find_output_dir(capture_dir)
+    current_dir = '.'
+    create_or_find_output.create_or_find_output_dir(current_dir, capture_dir)
     # captureディレクトリが存在しない場合は作成する
-    create_or_find_output.create_or_find_output_dir(output_dir)
+    create_or_find_output.create_or_find_output_dir(current_dir, output_dir)
     # outputディレクトリが存在しない場合は作成する
     
     while True:  # 無限ループを開始
