@@ -38,7 +38,7 @@ def main():
             # (コメントアウトされているが) 画像を新しいパスに移動する
             
             # YOLO検出を実行し、トリミングした画像をoutputディレクトリに保存
-            number_of_people = yolo_detect_and_cut('captured_image.jpg', log_dir)
+            number_of_people = yolo_detect_and_cut('captured_image.jpg', now_dir)
             # yolo_detect_and_cut関数を呼び出して、人数を検出し、トリミングした画像を保存する
             print(f"検出された人数: {number_of_people}")
             # 検出された人数を出力する
