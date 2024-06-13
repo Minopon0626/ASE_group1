@@ -4,24 +4,35 @@ from photographing import capture_image  # capturing.pyからcapture_image関数
 from ImageDetection import yolo_detect_and_cut  # ImageDetection.pyからyolo_detect_and_cut関数をインポート
 import create_or_find_output  # create_or_find_outputモジュールをインポート
 import Infrared_rays_send  # Infrared_rays_sendモジュールをインポート
+import time_capture
 
 def main():
     # ディレクトリが存在しない場合は作成
     capture_dir = 'capture'  # 画像を保存するためのディレクトリ名
     output_dir = 'output'  # 処理された画像を保存するためのディレクトリ名
+    
+    log_dir = 'log'
+    
     current_dir = '.'
     create_or_find_output.create_or_find_output_dir(current_dir, capture_dir)
     # captureディレクトリが存在しない場合は作成する
     create_or_find_output.create_or_find_output_dir(current_dir, output_dir)
     # outputディレクトリが存在しない場合は作成する
+
+    create_or_find_output.create_or_find_output_dir(current_dir, log_dir)
     
     while True:  # 無限ループを開始
         # 画像を撮影
         image_name = capture_image()
         # capture_image関数を呼び出して、画像を撮影し、ファイル名を取得する
         if image_name:
+
+            timestamp = time_capture.get_current_timestamp()
             # 撮影した画像をcaptureディレクトリに移動
+
             captured_image_path = os.path.join(capture_dir, image_name)
+            now_dir = create_or_find_output.create_or_find_output_dir(log_dir, timestamp)
+
             # 画像の新しいパスを作成する
             # os.rename(image_name, captured_image_path)
             # (コメントアウトされているが) 画像を新しいパスに移動する
