@@ -2,12 +2,13 @@
 画像のパスを受け取りその画像内の物体を検出してトリミングした画像をoutputに入れるプログラム
 """
 from ultralytics import YOLO  # YOLOモデルを使用するためにultralyticsライブラリをインポート
+import sys
 import file_path_finder  # ファイル検索のためのモジュールをインポート
 import create_or_find_output  # 出力ディレクトリの作成/確認のためのモジュールをインポート
 import cv2  # 画像処理のためのOpenCVライブラリをインポート
 import os  # OS操作のためのモジュールをインポート
 
-def yolo_detect_and_cut(image_name):
+def yolo_detect_and_cut(image_name, output_dir):
     # YOLOv8モデルをロード
     model = YOLO("yolov8n.pt")  # ここで適切なモデルを指定します。例えば、yolov8n.pt（Nanoモデル）
 
@@ -21,7 +22,6 @@ def yolo_detect_and_cut(image_name):
     image = cv2.imread(image_path)  # 画像ファイルを読み込む
 
     # 出力ディレクトリを設定
-    output_dir = create_or_find_output.create_or_find_output_dir()  # 出力ディレクトリを作成/確認する
     os.makedirs(output_dir, exist_ok=True)  # ディレクトリが存在しない場合は作成
 
     # 画像に対して予測を行う
@@ -69,3 +69,11 @@ def yolo_detect_and_cut(image_name):
     cv2.destroyAllWindows()  # OpenCVのウィンドウをすべて閉じる
 
     return person_count  # 検出された人の数を返す
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("使い方: python ImageDetection.py <image_name> <output_dir>")
+    else:
+        image_name = sys.argv[1]
+        output_dir = sys.argv[2]
+        yolo_detect_and_cut(image_name, output_dir)

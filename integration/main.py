@@ -10,8 +10,7 @@ def main():
     # ディレクトリが存在しない場合は作成
     capture_dir = 'capture'  # 画像を保存するためのディレクトリ名
     output_dir = 'output'  # 処理された画像を保存するためのディレクトリ名
-    
-    log_dir = 'log'
+    log_dir = 'log' # logディレクトリ名
     
     current_dir = '.'
     create_or_find_output.create_or_find_output_dir(current_dir, capture_dir)
@@ -20,17 +19,18 @@ def main():
     # outputディレクトリが存在しない場合は作成する
 
     create_or_find_output.create_or_find_output_dir(current_dir, log_dir)
-    
+    # logディレクトリが存在しない場合は作成する
+
     while True:  # 無限ループを開始
         # 画像を撮影
-        image_name = capture_image()
+        caprure_image = capture_image()
         # capture_image関数を呼び出して、画像を撮影し、ファイル名を取得する
-        if image_name:
-
+        if caprure_image:
+            #現在時刻を習得する
             timestamp = time_capture.get_current_timestamp()
+            
             # 撮影した画像をcaptureディレクトリに移動
-
-            captured_image_path = os.path.join(capture_dir, image_name)
+            captured_image_path = os.path.join(capture_dir, caprure_image)
             now_dir = create_or_find_output.create_or_find_output_dir(log_dir, timestamp)
 
             # 画像の新しいパスを作成する
