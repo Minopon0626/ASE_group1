@@ -27,6 +27,30 @@ def custom_print(line1_str, line2_str, line3_str):
             sys.stdout.write('\x1b[1A')  # カーソルを一行上に移動
             sys.stdout.write('\x1b[2K')  # 行をクリア
 
+        # 色の指定
+        RED = '\033[91m'
+        GREEN = '\033[92m'
+        YELLOW = '\033[93m'
+        RESET = '\033[0m'
+
+        def colorize_text(text, color, char_to_color):
+            """
+            特定の文字だけ色を変える関数。
+            Args:
+            text (str): 色を変えたい文字列。
+            color (str): 文字に適用する色。
+            char_to_color (str): 色を変えたい文字。
+            Returns:
+            str: 色が変わった文字列。
+            """
+            return ''.join([f"{color}{char}{RESET}" if char == char_to_color else char for char in text])
+
+        # 特定の文字だけ色を変える
+        line1_str = colorize_text(line1_str, RED, '改')
+        line1_str = colorize_text(line1_str, RED, '行')
+        line2_str = colorize_text(line2_str, GREEN, '*')
+        line3_str = colorize_text(line3_str, YELLOW, '*')
+
         # 新しい内容を逆順に出力（最新の行から順に出力）
         sys.stdout.write(line1_str + '\n')
         sys.stdout.write(line2_str + '\n')
