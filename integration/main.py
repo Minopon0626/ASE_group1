@@ -4,7 +4,7 @@ import photographing  # capturing.pyからcapture_image関数をインポート
 from ImageDetection import yolo_detect_and_cut  # ImageDetection.pyからyolo_detect_and_cut関数をインポート
 import create_or_find_output  # create_or_find_outputモジュールをインポート
 import Infrared_rays_send  # Infrared_rays_sendモジュールをインポート
-import time_capture
+import time_capture # time_captureモジュールをインポート
 import shutil  # shutilモジュールをインポートして、ファイル操作を行う
 
 
