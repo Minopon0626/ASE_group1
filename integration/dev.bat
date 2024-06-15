@@ -1,4 +1,4 @@
-@cmd /K D:\VScode forder\vscodeWorkspace
+@cmd /K
 @echo off
 python myscript.py
 pause
