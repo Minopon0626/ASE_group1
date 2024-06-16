@@ -4,9 +4,9 @@ import photographing  # capturing.pyからcapture_image関数をインポート
 from ImageDetection import yolo_detect_and_cut  # ImageDetection.pyからyolo_detect_and_cut関数をインポート
 import create_or_find_output  # create_or_find_outputモジュールをインポート
 import Infrared_rays_send  # Infrared_rays_sendモジュールをインポート
-import time_capture # time_captureモジュールをインポート
+import time_capture  # time_captureモジュールをインポート
 import shutil  # shutilモジュールをインポートして、ファイル操作を行う
-
+import custom_print  # custom_printモジュールをインポート
 
 def main():
     # ディレクトリが存在しない場合は作成
@@ -33,7 +33,11 @@ def main():
             # YOLO検出を実行し、トリミングした画像をoutputディレクトリに保存
             number_of_people = yolo_detect_and_cut('captured_image.jpg', now_dir)
             # yolo_detect_and_cut関数を呼び出して、人数を検出し、トリミングした画像を保存する
-            print(f"検出された人数: {number_of_people}")
+            custom_print.custom_print(
+                "検出された人数:",
+                " " * (number_of_people + 5) + "-" * number_of_people,
+                f"{number_of_people}人が検出されました"
+            )
             # 検出された人数を出力する
 
             # もし1人以上の人が検出されたらIRコマンドを送信
