@@ -9,7 +9,7 @@ GPIO.setwarnings(True)
 GPIO.setmode(GPIO.BCM)
 
 # DHT11の設定
-instance = dht11.DHT11(pin=14)
+instance = dht11.DHT11(pin=5)
 
 def read_dht11():
     result = instance.read()
