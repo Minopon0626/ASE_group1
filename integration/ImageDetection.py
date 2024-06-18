@@ -24,6 +24,9 @@ def yolo_detect_and_cut(image_name, output_dir):
     # 出力ディレクトリを設定
     os.makedirs(output_dir, exist_ok=True)  # ディレクトリが存在しない場合は作成
 
+    log_file_path = os.path.join(output_dir, "log.txt") # logファイルの指定
+
+
     # 画像に対して予測を行う
     results = model.predict(source=image_path)  # YOLOモデルを使用して画像の物体検出を行う
 
@@ -62,6 +65,7 @@ def yolo_detect_and_cut(image_name, output_dir):
             cv2.imwrite(output_filepath, cropped_image)  # 画像を保存
 
             # ログ出力
+            log_file_path.write(f"検出されたオブジェクト: {class_name}, 信頼度: {confidence:.2f}, 保存ファイル: {output_filename}\n")
             print(f"検出されたオブジェクト: {class_name}, 信頼度: {confidence:.2f}, 保存ファイル: {output_filename}")
             # 検出結果をコンソールに出力
 
