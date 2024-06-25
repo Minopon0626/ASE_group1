@@ -1,11 +1,12 @@
 import time  # timeモジュールをインポートして、時間関連の操作を行う
 import os  # osモジュールをインポートして、OSとの対話を行う
-from capture import photographing  # photographing.pyからcapture_image関数をインポート
-from detection.ImageDetection import yolo_detect_and_cut  # ImageDetection.pyからyolo_detect_and_cut関数をインポート
-from file_system import create_or_find_output  # create_or_find_outputモジュールをインポート
-from ir import Infrared_rays_send  # Infrared_rays_sendモジュールをインポート
-from capture import time_capture  # time_captureモジュールをインポート
+import photographing  # capturing.pyからcapture_image関数をインポート
+from ImageDetection import yolo_detect_and_cut  # ImageDetection.pyからyolo_detect_and_cut関数をインポート
+import create_or_find_output  # create_or_find_outputモジュールをインポート
+import Infrared_rays_send  # Infrared_rays_sendモジュールをインポート
+import time_capture # time_captureモジュールをインポート
 import shutil  # shutilモジュールをインポートして、ファイル操作を行う
+
 
 def main():
     # ディレクトリが存在しない場合は作成
