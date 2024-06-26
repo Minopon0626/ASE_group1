@@ -21,7 +21,7 @@ class IRReceiver(threading.Thread):
         if self.last_tick is not None:
             pulse_width = pigpio.tickDiff(self.last_tick, tick)
             self.pulse_widths.append(pulse_width)
-        
+
         self.last_tick = tick
 
     def run(self):
