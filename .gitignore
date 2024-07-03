@@ -12,4 +12,4 @@ __pycache__/
 # image_Conversionディレクトリのinputとoutputディレクトリの中身を無視
 image_Conversion/input/*
 image_Conversion/output/*
-gitにあげるファイルの変更
+# gitにあげるファイルの変更
