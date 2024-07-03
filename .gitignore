@@ -8,3 +8,8 @@ myenv/
 __pycache__/
 .DS_Store
 .env
+
+# image_Conversionディレクトリのinputとoutputディレクトリの中身を無視
+image_Conversion/input/*
+image_Conversion/output/*
+gitにあげるファイルの変更
