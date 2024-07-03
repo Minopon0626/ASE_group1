@@ -1,0 +1,10 @@
+# .gitignore
+
+# 仮想環境のディレクトリを無視
+myenv/
+
+# 他の無視するファイルやディレクトリの例
+*.pyc
+__pycache__/
+.DS_Store
+.env
