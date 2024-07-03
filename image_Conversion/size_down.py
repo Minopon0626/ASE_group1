@@ -1,6 +1,6 @@
 # pip install pillow
 
-# python image_utils.py input.jpg output.jpg 100 100
+# python size_down.py input.jpg output.jpg 100 100
 
 from PIL import Image
 import argparse
