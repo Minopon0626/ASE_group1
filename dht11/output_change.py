@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import dht11
 import time
 import datetime
-from custom_print import start_cutom_print, custom_print
+from ASE_group1.old_problem.custom_print import start_cutom_print, custom_print
 
 # GPIOの初期化
 GPIO.setwarnings(True)
