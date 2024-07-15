@@ -12,11 +12,10 @@ def write_log(log_file_path, class_name, confidence, output_filename):
     with open(log_file_path, 'a', encoding='utf-8') as log_file:
         log_file.write(f"検出されたオブジェクト: {class_name}, 信頼度: {confidence:.2f}, 保存ファイル: {output_filename}\n")
 
+def load_yolo_model():
+    return YOLO("yolov8n.pt")  # ここで適切なモデルを指定します。例えば、yolov8n.pt（Nanoモデル）
 
-def yolo_detect_and_cut(image_name, output_dir):
-    # YOLOv8モデルをロード
-    model = YOLO("yolov8n.pt")  # ここで適切なモデルを指定します。例えば、yolov8n.pt（Nanoモデル）
-
+def yolo_detect_and_cut(image_name, output_dir, model):
     # 画像を読み込む
     image_path = file_path_finder.find_file_in_current_directory(image_name)  # ここで入力画像のパスを指定します
     if not image_path:
@@ -29,8 +28,7 @@ def yolo_detect_and_cut(image_name, output_dir):
     # 出力ディレクトリを設定
     os.makedirs(output_dir, exist_ok=True)  # ディレクトリが存在しない場合は作成
 
-    log_file_path = os.path.join(output_dir, "log.txt") # logファイルの指定
-
+    log_file_path = os.path.join(output_dir, "log.txt")  # logファイルの指定
 
     # 画像に対して予測を行う
     results = model.predict(source=image_path)  # YOLOモデルを使用して画像の物体検出を行う
@@ -41,7 +39,6 @@ def yolo_detect_and_cut(image_name, output_dir):
     # 検出結果を処理
     object_count = {}  # 各オブジェクトの数をカウントするための辞書
     person_count = 0  # 人が検出された数をカウントする変数
-
 
     for result in results:
         boxes = result.boxes  # バウンディングボックスを取得
@@ -87,4 +84,5 @@ if __name__ == "__main__":
     else:
         image_name = sys.argv[1]
         output_dir = sys.argv[2]
-        yolo_detect_and_cut(image_name, output_dir)
+        model = load_yolo_model()
+        yolo_detect_and_cut(image_name, output_dir, model)
