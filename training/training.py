@@ -17,7 +17,7 @@ model.train(data=data_yaml, epochs=100, imgsz=640)
 model.val(data=data_yaml)
 
 # 推論の実行
-results = model('xxxxxxxxxxxxxx')
+results = model('D:\vscodefolder\ASE_group1\training\hansode_91.jpg')
 
 # 結果を表示
 results.show()

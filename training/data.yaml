@@ -1,0 +1,6 @@
+names:
+- hansode
+- nagasode
+nc: 2
+train: D:\vscodefolder\ASE_group1\training\images\train
+val: D:\vscodefolder\ASE_group1\training\images\val
