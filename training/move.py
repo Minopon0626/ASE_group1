@@ -62,8 +62,8 @@ for img, lbl in val_pairs:
 data_yaml = {
     'train': os.path.abspath(train_images_dir),
     'val': os.path.abspath(val_images_dir),
-    'nc': 1,  # クラスの数
-    'names': ['半袖']  # クラス名のリスト
+    'nc': 2,  # クラスの数
+    'names': ['hansode', 'nagasode']  # クラス名のリスト
 }
 
 with open('data.yaml', 'w') as yaml_file:

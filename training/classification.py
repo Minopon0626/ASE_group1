@@ -31,7 +31,7 @@ class AnnotationTool:
         self.start_y = None
 
         # クラスIDのリストを作成（ここにクラス名を追加）
-        self.classes = ["半袖"]
+        self.classes = ["hansode", "nagasode"]
         self.class_id_var = tk.StringVar(value=self.classes)
 
         # クラスIDを選択するためのリストボックスを作成
