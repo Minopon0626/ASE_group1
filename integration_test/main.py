@@ -48,6 +48,7 @@ def main():
 
             # もし1人以上の人が検出されたら、半袖と長袖の識別を実行
             if number_of_people > 0:
+                time.sleep(4)
                 short_sleeve_count = 0
                 long_sleeve_count = 0
                 unknown_count = 0
