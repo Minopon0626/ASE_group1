@@ -6,7 +6,7 @@
 import os
 import cv2
 
-def capture_image():
+def capture_image_data():
     cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
