@@ -42,3 +42,8 @@ def calculate_temperature(data, mode):
     average_1 = sum_1 / count_1
     print(f"Averages for {mode}: average_0_2={average_0_2}, average_1={average_1}")  # デバッグメッセージ
     return (average_0_2 + average_1) / 2
+
+def adjust_temperature_for_people(cooling_threshold, heating_threshold, num_people):
+    adjusted_cooling = cooling_threshold - num_people
+    adjusted_heating = heating_threshold - num_people
+    return adjusted_cooling, adjusted_heating
