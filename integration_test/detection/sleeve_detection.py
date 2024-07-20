@@ -17,6 +17,7 @@ def yolo_detect_and_cut_sleeve(image_name, output_dir, model):
     # 出力ディレクトリを設定
     os.makedirs(output_dir, exist_ok=True)  # ディレクトリが存在しない場合は作成
 
+
     log_file_path = os.path.join(output_dir, "log.txt")  # logファイルの指定
 
     # 画像に対して予測を行う
