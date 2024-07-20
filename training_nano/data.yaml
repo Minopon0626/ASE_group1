@@ -1,0 +1,6 @@
+names:
+- hansode
+- nagasode
+nc: 2
+train: /home/hisui/academic-1/ASE_group1/training_nano/images/train
+val: /home/hisui/academic-1/ASE_group1/training_nano/images/val
