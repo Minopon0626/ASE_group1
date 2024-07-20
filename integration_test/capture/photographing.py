@@ -12,22 +12,21 @@ def capture_image():
     if not cap.isOpened():
         # カメラデバイスが開けない場合の処理
         print("カメラデバイスを開けませんでした")
-        return None  # Noneを返して終了
+        return None, None  # 画像データとファイルパスの両方を返す
 
     # フレームをキャプチャ
     ret, frame = cap.read()  # カメラからフレームをキャプチャ
 
     if ret:
         # フレームのキャプチャに成功した場合
-        # 画像を保存
-        file_path = os.path.abspath('captured_image.jpg')  # 絶対パスを取得
+        file_path = os.path.abspath('captured_image.jpg')  # 保存するファイルパスを取得
         cv2.imwrite(file_path, frame)  # フレームを画像ファイルとして保存
         print(f"画像を保存しました: {file_path}")
-        return file_path  # 保存した画像のファイルパスを返す
+        return frame, file_path  # 画像データとファイルパスを返す
     else:
         # フレームのキャプチャに失敗した場合
         print("フレームのキャプチャに失敗しました")
-        return None  # Noneを返して終了
+        return None, None  # 画像データとファイルパスの両方を返す
 
     # カメラデバイスを解放
     cap.release()  # カメラデバイスを解放してリソースをクリア
