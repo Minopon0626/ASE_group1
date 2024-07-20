@@ -12,6 +12,17 @@ if __name__ == "__main__":
     try:
         # ディレクトリ作成とパスの辞書を取得
         directory_paths = create_directories()
+        directory_paths.update({
+            "Strong_Cooling": os.path.join("Data", "Strong_Cooling"),
+            "Strong_Heating": os.path.join("Data", "Strong_Heating")
+        })
+
+        for key, path in directory_paths.items():
+            if not os.path.exists(path):
+                os.makedirs(path)
+                print(f"ディレクトリ '{path}' を作成しました。")
+            else:
+                print(f"ディレクトリ '{path}' は既に存在します。")
 
         # 各ディレクトリのデータを読み取る
         cold_data = read_data_file(os.path.join(directory_paths["Cold"], "data.txt"))
@@ -48,33 +59,59 @@ if __name__ == "__main__":
         lon = location['location']['lng']
 
         weather_info = get_current_weather(lat, lon, weather_api_key)
+        final_temperature = None  # 返す温度を保持する変数
         if weather_info is not None:
             print(f"緯度: {lat}, 経度: {lon}")
             print(f"現在の気温: {weather_info['temperature']}°C")
             print(f"天気: {weather_info['weather']}")
 
-            # 外気温が冷房の基準温度以上か暖房の基準温度以下かを確認して該当ファイルを表示
-            if weather_info['temperature'] >= cooling_threshold:
-                print("冷房")
-                read_and_display_file(os.path.join(directory_paths["Cold"], "data.txt"))
-            elif weather_info['temperature'] <= heating_threshold:
-                print("暖房")
-                read_and_display_file(os.path.join(directory_paths["Hot"], "data.txt"))
-            else:
-                print("冷房も暖房も必要ありません")
-
             # 手動で部屋の温度を入力
             try:
                 room_temperature = float(input("部屋の温度を入力してください (°C): "))
-                if room_temperature > weather_info['temperature']:
-                    print(f"部屋の温度 {room_temperature}°C は現在の気温 {weather_info['temperature']}°C より高いです。")
-                elif room_temperature < weather_info['temperature']:
-                    print(f"部屋の温度 {room_temperature}°C は現在の気温 {weather_info['temperature']}°C より低いです。")
+                temperature_diff = abs(room_temperature - weather_info['temperature'])
+                print(f"部屋の温度と外気温の差: {temperature_diff}°C")
+
+                if temperature_diff >= 3:
+                    if room_temperature > weather_info['temperature'] and room_temperature > cooling_threshold:
+                        print("強冷房")
+                        read_and_display_file(os.path.join(directory_paths["Strong_Cooling"], "data.txt"))
+                        final_temperature = cooling_threshold - 3
+                    elif room_temperature < weather_info['temperature'] and room_temperature < heating_threshold:
+                        print("強暖房")
+                        read_and_display_file(os.path.join(directory_paths["Strong_Heating"], "data.txt"))
+                        final_temperature = heating_threshold + 3
+                    else:
+                        print("強冷房も強暖房も必要ありません")
+                        final_temperature = None
                 else:
-                    print(f"部屋の温度 {room_temperature}°C は現在の気温 {weather_info['temperature']}°C と同じです。")
+                    if room_temperature > weather_info['temperature']:
+                        print(f"部屋の温度 {room_temperature}°C は現在の気温 {weather_info['temperature']}°C より高いです。")
+                    elif room_temperature < weather_info['temperature']:
+                        print(f"部屋の温度 {room_temperature}°C は現在の気温 {weather_info['temperature']}°C より低いです。")
+                    else:
+                        print(f"部屋の温度 {room_temperature}°C は現在の気温 {weather_info['temperature']}°C と同じです。")
+
+                    if weather_info['temperature'] >= cooling_threshold:
+                        print("冷房")
+                        read_and_display_file(os.path.join(directory_paths["Cold"], "data.txt"))
+                        final_temperature = cooling_threshold
+                    elif weather_info['temperature'] <= heating_threshold:
+                        print("暖房")
+                        read_and_display_file(os.path.join(directory_paths["Hot"], "data.txt"))
+                        final_temperature = heating_threshold
+                    else:
+                        print("冷房も暖房も必要ありません")
+                        final_temperature = None
             except ValueError:
                 print("無効な温度が入力されました。")
+                final_temperature = None
         else:
             print("気温と天気を取得できませんでした。")
+            final_temperature = None
+
+        # 最終的な温度を絶対値で繰り下げ
+        if final_temperature is not None:
+            final_temperature = int(final_temperature)  # 小数点以下を繰り下げ
+        print(f"返却する温度: {final_temperature}°C")
     except ValueError as e:
         print(e)
