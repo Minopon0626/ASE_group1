@@ -1,5 +1,8 @@
 import time  # timeモジュールをインポートして、時間関連の操作を行う
 import os  # osモジュールをインポートして、OSとの対話を行う
+import sys
+# 'detection' ディレクトリをシステムパスに追加
+sys.path.append(os.path.join(os.path.dirname(__file__), 'detection'))
 from capture import photographing  # photographing.pyからcapture_image関数をインポート
 from detection import yolo_common  # yolo_common.pyからload_yolo_model関数をインポート
 from detection import person_detection  # person_detection.pyからyolo_detect_and_cut_person関数をインポート
@@ -20,8 +23,8 @@ def main():
 
     try:
         # YOLOモデルを初期化
-        person_model = yolo_common.load_yolo_model('default_model')  # デフォルトのYOLOモデルをロード
-        sleeve_model = yolo_common.load_yolo_model('sleeve_model')  # 半袖と長袖を識別するモデルをロード
+        person_model = yolo_common.load_yolo_model('yolov8s')  # デフォルトのYOLOモデルをロード
+        sleeve_model = yolo_common.load_yolo_model('best')  # 半袖と長袖を識別するモデルをロード
     except FileNotFoundError as e:
         print(e)
         return
@@ -47,12 +50,20 @@ def main():
             if number_of_people > 0:
                 short_sleeve_count = 0
                 long_sleeve_count = 0
-                for person_image in person_images:
+                unknown_count = 0
+                for i, person_image in enumerate(person_images):
                     sleeve_counts = sleeve_detection.yolo_detect_and_cut_sleeve(person_image, now_dir, sleeve_model)
-                    short_sleeve_count += 1 if sleeve_counts.get('short_sleeve', 0) > sleeve_counts.get('long_sleeve', 0) else 0
-                    long_sleeve_count += 1 if sleeve_counts.get('long_sleeve', 0) > sleeve_counts.get('short_sleeve', 0) else 0
+                    if sleeve_counts.get('short_sleeve', 0) > sleeve_counts.get('long_sleeve', 0):
+                        short_sleeve_count += 1
+                        print(f"人物 {i+1}: 半袖")
+                    elif sleeve_counts.get('long_sleeve', 0) > sleeve_counts.get('short_sleeve', 0):
+                        long_sleeve_count += 1
+                        print(f"人物 {i+1}: 長袖")
+                    else:
+                        unknown_count += 1
+                        print(f"人物 {i+1}: 不明")
                 
-                print(f"半袖: {short_sleeve_count}, 長袖: {long_sleeve_count}")
+                print(f"総計 - 半袖: {short_sleeve_count}, 長袖: {long_sleeve_count}, 不明: {unknown_count}")
                 
                 Infrared_rays_send.send_ir_command()
                 # 人が1人以上検出された場合、赤外線コマンドを送信する
