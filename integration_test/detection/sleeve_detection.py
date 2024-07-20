@@ -26,8 +26,8 @@ def yolo_detect_and_cut_sleeve(image_name, output_dir, model):
     class_names = model.names  # モデルが認識するクラス名のリストを取得
 
     # 検出結果を処理
-    max_confidence = { "short_sleeve": 0, "long_sleeve": 0 }  # 各クラスの最大信頼度
-    best_box = { "short_sleeve": None, "long_sleeve": None }  # 各クラスの最高信頼度のバウンディングボックス
+    max_confidence = { "hansode": 0, "nagasode": 0 }  # 各クラスの最大信頼度
+    best_box = { "hansode": None, "nagasode": None }  # 各クラスの最高信頼度のバウンディングボックス
 
     for result in results:
         boxes = result.boxes  # バウンディングボックスを取得
@@ -46,10 +46,10 @@ def yolo_detect_and_cut_sleeve(image_name, output_dir, model):
                 best_box[class_name] = (x1, y1, x2, y2)
 
     # 信頼度が最も高いクラスを決定
-    if max_confidence["short_sleeve"] > max_confidence["long_sleeve"]:
-        detected_class = "short_sleeve"
-    elif max_confidence["long_sleeve"] > max_confidence["short_sleeve"]:
-        detected_class = "long_sleeve"
+    if max_confidence["hansode"] > max_confidence["nagasode"]:
+        detected_class = "hansode"
+    elif max_confidence["nagasode"] > max_confidence["hansode"]:
+        detected_class = "nagasode"
     else:
         detected_class = "unknown"
 
