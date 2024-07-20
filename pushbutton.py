@@ -1,24 +1,25 @@
-# タクトスイッチのテストファイル
-
-import RPi.GPIO as GPIO               # 必要なモジュールをインポートします
-
-button_pin = 12                       # GPIO 12にボタンをつなぎます
-
-def button_callback(channel):         # ボタンが押された時にやりたいことを
-    print("Button was pushed!")       # この行から書いておきます
-
-GPIO.setmode(GPIO.BCM)                # BCMモードでGPIOを使用します
-
-# GPIO 12を入力モードにし、プルアップします
-GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-# ボタンが押されてGPIO 12がGNDになることを検出し、button_callbackを起動します
-# bouncetimeはボタン押しの検出間隔です
-GPIO.add_event_detect(BUTTON, GPIO.FALLING, callback=button_callback, bouncetime=200)
-
-# 画面に文字を表示し、待機に入ります
-input("Press button to count, or Enter to quit\n")
-
-# キーボードの何かのキーが押されると実行します
-GPIO.cleanup()
-print("Bye!")
+#必要なモジュールのインポート
+#GPIOピン制御ライブラリ
+import RPi.GPIO as GPIO
+import time
+import sys
+ 
+#ポート番号の定義
+Sw_GPIO = 23
+#GPIOの設定
+GPIO.setmode(GPIO.BCM)
+#GPIO23を入力モードに設定してプルダウン抵抗を有効にする
+GPIO.setup(Sw_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+ 
+while True:
+    try:
+        #GPIO23の入力を読み取る
+        switchStatus = GPIO.input(Sw_GPIO)
+        #スイッチが押下された時に”Hi!”と出力
+        if switchStatus == 1:
+            print(“Hi!”)
+        time.sleep(0.1)
+ 
+    except KeyboardInterrupt:
+        GPIO.cleanup()
+        sys.exit()
