@@ -33,17 +33,21 @@ def calculate_temperature(data, mode):
 
     if count_0_2 == 0 or count_1 == 0:
         if mode == 'cooling':
-            print(f"Calculation failed for cooling: count_0_2={count_0_2}, count_1={count_1}")  # デバッグメッセージ
+            print(f"Calculation failed for cooling: count_0_2={count_0_2}, count_1={count_1}")  # デバッグ messages
         elif mode == 'heating':
-            print(f"Calculation failed for heating: count_0_2={count_0_2}, count_1={count_1}")  # デバッグメッセージ
+            print(f"Calculation failed for heating: count_0_2={count_0_2}, count_1={count_1}")  # デバッグ messages
         return None  # 計算できない場合
 
     average_0_2 = sum_0_2 / count_0_2
     average_1 = sum_1 / count_1
-    print(f"Averages for {mode}: average_0_2={average_0_2}, average_1={average_1}")  # デバッグメッセージ
+    print(f"Averages for {mode}: average_0_2={average_0_2}, average_1={average_1}")  # デバッグ messages
     return (average_0_2 + average_1) / 2
 
-def adjust_temperature_for_people(cooling_threshold, heating_threshold, num_people):
-    adjusted_cooling = cooling_threshold - num_people
-    adjusted_heating = heating_threshold - num_people
+def adjust_temperature_for_people(cooling_threshold, heating_threshold, person_adjustment):
+    adjusted_cooling = cooling_threshold - person_adjustment
+    adjusted_heating = heating_threshold - person_adjustment
     return adjusted_cooling, adjusted_heating
+
+def calculate_person_adjustment(long_sleeve_count, short_sleeve_count):
+    person_adjustment = long_sleeve_count * 1 + short_sleeve_count * 0.5
+    return person_adjustment

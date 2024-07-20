@@ -1,12 +1,21 @@
 from geolocation import get_wifi_info, get_location
 from weather import get_current_weather
 from file_manager import create_directories, read_data_file, read_and_display_file
-from temperature_calculator import calculate_temperature, validate_thresholds, adjust_temperature_for_people
+from temperature_calculator import calculate_temperature, validate_thresholds, adjust_temperature_for_people, calculate_person_adjustment
 import sys
 import os
 
-def main(room_temperature, num_people):
+def get_initial_location():
     google_api_key = "AIzaSyCGqNUFFIdsC9ZwABMIRVNmdmGfwILjODU"  # ここにGoogle APIキーを設定
+    wifi_info = get_wifi_info()  # Wi-Fiアクセスポイント情報を取得
+    if not wifi_info:
+        print("Wi-Fiアクセスポイント情報が取得できませんでした。")
+        sys.exit(1)
+
+    location = get_location(wifi_info, google_api_key)  # 位置情報を取得
+    return location
+
+def main(room_temperature, num_people, long_sleeve_count, short_sleeve_count, location):
     weather_api_key = "69c99674130d87692972008a78fff1e0"  # ここにOpenWeatherMap APIキーを設定
 
     try:
@@ -24,23 +33,20 @@ def main(room_temperature, num_people):
         cooling_threshold = calculate_temperature(cold_data, 'cooling')
         heating_threshold = calculate_temperature(hot_data, 'heating')
 
-        # 人数に応じて冷房と暖房の基準温度を調整
+        # 人数補正量を計算
+        person_adjustment = calculate_person_adjustment(long_sleeve_count, short_sleeve_count)
+
+        # 人数補正量に応じて冷房と暖房の基準温度を調整
         if cooling_threshold is not None and heating_threshold is not None:
-            cooling_threshold, heating_threshold = adjust_temperature_for_people(cooling_threshold, heating_threshold, num_people)
-            print(f"人数調整後の冷房の基準温度: {cooling_threshold}°C")
-            print(f"人数調整後の暖房の基準温度: {heating_threshold}°C")
+            cooling_threshold, heating_threshold = adjust_temperature_for_people(cooling_threshold, heating_threshold, person_adjustment)
+            print(f"人数補正後の冷房の基準温度: {cooling_threshold}°C")
+            print(f"人数補正後の暖房の基準温度: {heating_threshold}°C")
         else:
             print("冷房または暖房の基準温度を計算できませんでした。")
 
         # 定数として設定された冷房と暖房の基準温度を検証
         validate_thresholds(cooling_threshold, heating_threshold)
 
-        wifi_info = get_wifi_info()  # Wi-Fiアクセスポイント情報を取得
-        if not wifi_info:
-            print("Wi-Fiアクセスポイント情報が取得できませんでした。")
-            sys.exit(1)
-
-        location = get_location(wifi_info, google_api_key)  # 位置情報を取得
         lat = location['location']['lat']
         lon = location['location']['lng']
 
@@ -74,7 +80,12 @@ def main(room_temperature, num_people):
 
 # 以下はこのスクリプトが直接実行された場合の動作
 if __name__ == "__main__":
+    # 初期位置情報を取得
+    location = get_initial_location()
+
     # デバッグ用のデフォルト値
     room_temperature = 25.0
-    num_people = 3
-    main(room_temperature, num_people)
+    num_people = 5
+    long_sleeve_count = 3  # 長袖を着ている人数
+    short_sleeve_count = 2  # 半袖を着ている人数
+    main(room_temperature, num_people, long_sleeve_count, short_sleeve_count, location)
