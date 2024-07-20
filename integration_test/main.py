@@ -53,10 +53,10 @@ def main():
                 unknown_count = 0
                 for i, person_image in enumerate(person_images):
                     sleeve_counts = sleeve_detection.yolo_detect_and_cut_sleeve(person_image, now_dir, sleeve_model)
-                    if sleeve_counts.get('short_sleeve', 0) > sleeve_counts.get('long_sleeve', 0):
+                    if sleeve_counts.get('hansode', 0) > sleeve_counts.get('nagasode', 0):
                         short_sleeve_count += 1
                         print(f"人物 {i+1}: 半袖")
-                    elif sleeve_counts.get('long_sleeve', 0) > sleeve_counts.get('short_sleeve', 0):
+                    elif sleeve_counts.get('nagasode', 0) > sleeve_counts.get('hansode', 0):
                         long_sleeve_count += 1
                         print(f"人物 {i+1}: 長袖")
                     else:
