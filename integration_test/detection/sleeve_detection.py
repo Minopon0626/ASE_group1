@@ -26,7 +26,8 @@ def yolo_detect_and_cut_sleeve(image_name, output_dir, model):
     class_names = model.names  # モデルが認識するクラス名のリストを取得
 
     # 検出結果を処理
-    object_count = {}  # 各オブジェクトの数をカウントするための辞書
+    max_confidence = { "short_sleeve": 0, "long_sleeve": 0 }  # 各クラスの最大信頼度
+    best_box = { "short_sleeve": None, "long_sleeve": None }  # 各クラスの最高信頼度のバウンディングボックス
 
     for result in results:
         boxes = result.boxes  # バウンディングボックスを取得
@@ -39,25 +40,26 @@ def yolo_detect_and_cut_sleeve(image_name, output_dir, model):
             class_name = class_names[class_id]  # クラス名を取得
             confidence = box.conf[0].item()  # 信頼度を取得
 
-            # オブジェクトの数をカウント
-            if class_name not in object_count:
-                object_count[class_name] = 0  # 初めてのクラス名の場合、辞書に追加
-            object_count[class_name] += 1  # カウントを増やす
+            # 信頼度が現在の最大信頼度よりも高い場合、更新
+            if class_name in max_confidence and confidence > max_confidence[class_name]:
+                max_confidence[class_name] = confidence
+                best_box[class_name] = (x1, y1, x2, y2)
 
-            # バウンディングボックス部分を切り抜き
+    # 信頼度が最も高いバウンディングボックスを使って画像を切り抜き保存
+    for class_name, box in best_box.items():
+        if box:
+            x1, y1, x2, y2 = box
             cropped_image = image[y1:y2, x1:x2]  # バウンディングボックスの部分を切り抜く
-
-            # 切り抜いた画像を保存
-            output_filename = f"{class_name}_{object_count[class_name]}.jpeg"  # 保存するファイル名を生成
+            output_filename = f"{class_name}_best.jpeg"  # 保存するファイル名を生成
             output_filepath = os.path.join(output_dir, output_filename)  # 保存先のパスを生成
             cv2.imwrite(output_filepath, cropped_image)  # 画像を保存
 
             # ログ出力
-            write_log(log_file_path, class_name, confidence, output_filename)
-            print(f"検出されたオブジェクト: {class_name}, 信頼度: {confidence:.2f}, 保存ファイル: {output_filename}")
+            write_log(log_file_path, class_name, max_confidence[class_name], output_filename)
+            print(f"検出されたオブジェクト: {class_name}, 信頼度: {max_confidence[class_name]:.2f}, 保存ファイル: {output_filename}")
             # 検出結果をコンソールに出力
 
     # 全てのウィンドウを閉じる
     cv2.destroyAllWindows()  # OpenCVのウィンドウをすべて閉じる
 
-    return object_count  # 検出されたオブジェクトの数を返す
+    return max_confidence  # 最も信頼度が高いオブジェクトの数を返す

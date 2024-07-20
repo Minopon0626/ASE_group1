@@ -10,7 +10,7 @@ def yolo_detect_and_cut_person(image_name, output_dir, model):
     if not image_path:
         # 画像が見つからない場合の処理
         print(f"{image_name} が見つかりませんでした")
-        return 0  # 人が検出されなかったことを示すために0を返す
+        return 0, []  # 人が検出されなかったことを示すために0を返す
 
     image = cv2.imread(image_path)  # 画像ファイルを読み込む
 
@@ -28,6 +28,7 @@ def yolo_detect_and_cut_person(image_name, output_dir, model):
     # 検出結果を処理
     object_count = {}  # 各オブジェクトの数をカウントするための辞書
     person_count = 0  # 人が検出された数をカウントする変数
+    person_images = []  # 切り抜き画像のパスを保存するリスト
 
     for result in results:
         boxes = result.boxes  # バウンディングボックスを取得
@@ -57,6 +58,10 @@ def yolo_detect_and_cut_person(image_name, output_dir, model):
             output_filepath = os.path.join(output_dir, output_filename)  # 保存先のパスを生成
             cv2.imwrite(output_filepath, cropped_image)  # 画像を保存
 
+            # 人の切り抜き画像パスをリストに追加
+            if class_name == "person":
+                person_images.append(output_filepath)
+
             # ログ出力
             write_log(log_file_path, class_name, confidence, output_filename)
             print(f"検出されたオブジェクト: {class_name}, 信頼度: {confidence:.2f}, 保存ファイル: {output_filename}")
@@ -65,4 +70,4 @@ def yolo_detect_and_cut_person(image_name, output_dir, model):
     # 全てのウィンドウを閉じる
     cv2.destroyAllWindows()  # OpenCVのウィンドウをすべて閉じる
 
-    return person_count  # 検出された人の数を返す
+    return person_count, person_images  # 検出された人の数と切り抜き画像のパスリストを返す

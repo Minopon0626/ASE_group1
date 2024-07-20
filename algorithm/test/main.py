@@ -1,7 +1,7 @@
 from geolocation import get_wifi_info, get_location
 from weather import get_current_weather
 from file_manager import create_directories, read_data_file, read_and_display_file
-from temperature_calculator import calculate_temperature, validate_thresholds, adjust_temperature_for_people, calculate_person_adjustment
+from temperature_calculator import calculate_temperature, validate_thresholds, adjust_temperature_for_people, calculate_person_adjustment, adjust_person_count
 import sys
 import os
 
@@ -17,6 +17,8 @@ def get_initial_location():
 
 def main(room_temperature, num_people, long_sleeve_count, short_sleeve_count, location):
     weather_api_key = "69c99674130d87692972008a78fff1e0"  # ここにOpenWeatherMap APIキーを設定
+    long_sleeve_rate = 1.0  # 長袖の温度変化率
+    short_sleeve_rate = 0.5  # 半袖の温度変化率
 
     try:
         # ディレクトリ作成とパスの辞書を取得
@@ -33,8 +35,11 @@ def main(room_temperature, num_people, long_sleeve_count, short_sleeve_count, lo
         cooling_threshold = calculate_temperature(cold_data, 'cooling')
         heating_threshold = calculate_temperature(hot_data, 'heating')
 
+        # 人数確認と調整
+        long_sleeve_count, short_sleeve_count = adjust_person_count(num_people, long_sleeve_count, short_sleeve_count)
+
         # 人数補正量を計算
-        person_adjustment = calculate_person_adjustment(long_sleeve_count, short_sleeve_count)
+        person_adjustment = calculate_person_adjustment(long_sleeve_count, short_sleeve_count, long_sleeve_rate, short_sleeve_rate)
 
         # 人数補正量に応じて冷房と暖房の基準温度を調整
         if cooling_threshold is not None and heating_threshold is not None:

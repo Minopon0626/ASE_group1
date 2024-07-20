@@ -39,14 +39,20 @@ def main():
             shutil.copy(capture_image, now_dir)
             
             # 人物検出を実行し、トリミングした画像をoutputディレクトリに保存
-            number_of_people = person_detection.yolo_detect_and_cut_person('captured_image.jpg', now_dir, person_model)
+            number_of_people, person_images = person_detection.yolo_detect_and_cut_person('captured_image.jpg', now_dir, person_model)
             print(f"検出された人数: {number_of_people}")
             # 検出された人数を出力する
 
             # もし1人以上の人が検出されたら、半袖と長袖の識別を実行
             if number_of_people > 0:
-                sleeve_counts = sleeve_detection.yolo_detect_and_cut_sleeve('captured_image.jpg', now_dir, sleeve_model)
-                print(f"半袖: {sleeve_counts.get('short_sleeve', 0)}, 長袖: {sleeve_counts.get('long_sleeve', 0)}")
+                short_sleeve_count = 0
+                long_sleeve_count = 0
+                for person_image in person_images:
+                    sleeve_counts = sleeve_detection.yolo_detect_and_cut_sleeve(person_image, now_dir, sleeve_model)
+                    short_sleeve_count += 1 if sleeve_counts.get('short_sleeve', 0) > sleeve_counts.get('long_sleeve', 0) else 0
+                    long_sleeve_count += 1 if sleeve_counts.get('long_sleeve', 0) > sleeve_counts.get('short_sleeve', 0) else 0
+                
+                print(f"半袖: {short_sleeve_count}, 長袖: {long_sleeve_count}")
                 
                 Infrared_rays_send.send_ir_command()
                 # 人が1人以上検出された場合、赤外線コマンドを送信する
