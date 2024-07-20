@@ -5,7 +5,7 @@
 import os  # ファイルパスの操作に必要なライブラリをインポート
 import cv2  # OpenCVライブラリをインポートして、画像処理やカメラ操作を行う
 
-def capture_image():
+def capture_image_data():
     # カメラデバイスの初期化（通常はデバイスIDが0になります）
     cap = cv2.VideoCapture(0)  # デバイスID0でカメラを初期化
 
