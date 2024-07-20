@@ -1,21 +1,10 @@
-"""
-画像のパスを受け取りその画像内の物体を検出してトリミングした画像をoutputに入れるプログラム
-"""
-from ultralytics import YOLO  # YOLOモデルを使用するためにultralyticsライブラリをインポート
-import sys
+# person_detection.py
+import cv2
+import os
 from file_system import file_path_finder  # ファイル検索のためのモジュールをインポート
-from file_system import create_or_find_output  # 出力ディレクトリの作成/確認のためのモジュールをインポート
-import cv2  # 画像処理のためのOpenCVライブラリをインポート
-import os  # OS操作のためのモジュールをインポート
+from yolo_common import load_yolo_model, write_log
 
-def write_log(log_file_path, class_name, confidence, output_filename):
-    with open(log_file_path, 'a', encoding='utf-8') as log_file:
-        log_file.write(f"検出されたオブジェクト: {class_name}, 信頼度: {confidence:.2f}, 保存ファイル: {output_filename}\n")
-
-def load_yolo_model():
-    return YOLO("yolov8n.pt")  # ここで適切なモデルを指定します。例えば、yolov8n.pt（Nanoモデル）
-
-def yolo_detect_and_cut(image_name, output_dir, model):
+def yolo_detect_and_cut_person(image_name, output_dir, model):
     # 画像を読み込む
     image_path = file_path_finder.find_file_in_current_directory(image_name)  # ここで入力画像のパスを指定します
     if not image_path:
@@ -77,12 +66,3 @@ def yolo_detect_and_cut(image_name, output_dir, model):
     cv2.destroyAllWindows()  # OpenCVのウィンドウをすべて閉じる
 
     return person_count  # 検出された人の数を返す
-
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("使い方: python ImageDetection.py <image_name> <output_dir>")
-    else:
-        image_name = sys.argv[1]
-        output_dir = sys.argv[2]
-        model = load_yolo_model()
-        yolo_detect_and_cut(image_name, output_dir, model)
