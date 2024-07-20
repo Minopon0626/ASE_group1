@@ -52,11 +52,12 @@ def main():
                 long_sleeve_count = 0
                 unknown_count = 0
                 for i, person_image in enumerate(person_images):
-                    sleeve_counts = sleeve_detection.yolo_detect_and_cut_sleeve(person_image, now_dir, sleeve_model)
-                    if sleeve_counts.get('hansode', 0) > sleeve_counts.get('nagasode', 0):
+                    detected_sleeve = sleeve_detection.yolo_detect_and_cut_sleeve(person_image, now_dir, sleeve_model)
+                    print(f"人物 {i+1} の識別結果: {detected_sleeve}")  # デバッグ用に識別結果を表示
+                    if detected_sleeve == "short_sleeve":
                         short_sleeve_count += 1
                         print(f"人物 {i+1}: 半袖")
-                    elif sleeve_counts.get('nagasode', 0) > sleeve_counts.get('hansode', 0):
+                    elif detected_sleeve == "long_sleeve":
                         long_sleeve_count += 1
                         print(f"人物 {i+1}: 長袖")
                     else:

@@ -10,7 +10,7 @@ def yolo_detect_and_cut_sleeve(image_name, output_dir, model):
     if not image_path:
         # 画像が見つからない場合の処理
         print(f"{image_name} が見つかりませんでした")
-        return 0  # 検出されなかったことを示すために0を返す
+        return "unknown"  # 検出されなかったことを示すために"unknown"を返す
 
     image = cv2.imread(image_path)  # 画像ファイルを読み込む
 
@@ -45,21 +45,28 @@ def yolo_detect_and_cut_sleeve(image_name, output_dir, model):
                 max_confidence[class_name] = confidence
                 best_box[class_name] = (x1, y1, x2, y2)
 
-    # 信頼度が最も高いバウンディングボックスを使って画像を切り抜き保存
-    for class_name, box in best_box.items():
-        if box:
-            x1, y1, x2, y2 = box
-            cropped_image = image[y1:y2, x1:x2]  # バウンディングボックスの部分を切り抜く
-            output_filename = f"{class_name}_best.jpeg"  # 保存するファイル名を生成
-            output_filepath = os.path.join(output_dir, output_filename)  # 保存先のパスを生成
-            cv2.imwrite(output_filepath, cropped_image)  # 画像を保存
+    # 信頼度が最も高いクラスを決定
+    if max_confidence["short_sleeve"] > max_confidence["long_sleeve"]:
+        detected_class = "short_sleeve"
+    elif max_confidence["long_sleeve"] > max_confidence["short_sleeve"]:
+        detected_class = "long_sleeve"
+    else:
+        detected_class = "unknown"
 
-            # ログ出力
-            write_log(log_file_path, class_name, max_confidence[class_name], output_filename)
-            print(f"検出されたオブジェクト: {class_name}, 信頼度: {max_confidence[class_name]:.2f}, 保存ファイル: {output_filename}")
-            # 検出結果をコンソールに出力
+    # 信頼度が最も高いバウンディングボックスを使って画像を切り抜き保存
+    if best_box[detected_class]:
+        x1, y1, x2, y2 = best_box[detected_class]
+        cropped_image = image[y1:y2, x1:x2]  # バウンディングボックスの部分を切り抜く
+        output_filename = f"{detected_class}_best.jpeg"  # 保存するファイル名を生成
+        output_filepath = os.path.join(output_dir, output_filename)  # 保存先のパスを生成
+        cv2.imwrite(output_filepath, cropped_image)  # 画像を保存
+
+        # ログ出力
+        write_log(log_file_path, detected_class, max_confidence[detected_class], output_filename)
+        print(f"検出されたオブジェクト: {detected_class}, 信頼度: {max_confidence[detected_class]:.2f}, 保存ファイル: {output_filename}")
+        # 検出結果をコンソールに出力
 
     # 全てのウィンドウを閉じる
     cv2.destroyAllWindows()  # OpenCVのウィンドウをすべて閉じる
 
-    return max_confidence  # 最も信頼度が高いオブジェクトの数を返す
+    return detected_class  # 最も信頼度が高いクラスを返す
