@@ -57,10 +57,10 @@ def main():
                     person_image = cv2.imread(person_image_path)
                     detected_sleeve = sleeve_detection.yolo_detect_and_cut_sleeve(person_image, now_dir, sleeve_model)
                     print(f"人物 {person_images.index(person_image_path) + 1} の識別結果: {detected_sleeve}")  # デバッグ用に識別結果を表示
-                    if detected_sleeve == "short_sleeve":
+                    if detected_sleeve == "hansode":
                         short_sleeve_count += 1
                         print(f"人物 {person_images.index(person_image_path) + 1}: 半袖")
-                    elif detected_sleeve == "long_sleeve":
+                    elif detected_sleeve == "nagasode":
                         long_sleeve_count += 1
                         print(f"人物 {person_images.index(person_image_path) + 1}: 長袖")
                     else:

@@ -30,7 +30,7 @@ def yolo_detect_and_cut_sleeve(image_data, output_dir, model):
 
             # クラス名が "sleeve" の場合、半袖と長袖を識別
             if class_name == "sleeve":
-                detected_sleeve = "short_sleeve" if confidence > 0.5 else "long_sleeve"
+                detected_sleeve = "hansode" if confidence > 0.5 else "nagasode"
                 # 半袖か長袖かを信頼度に基づいて判断（ここでは例として信頼度 > 0.5 の場合を半袖とする）
 
                 # ログ出力
