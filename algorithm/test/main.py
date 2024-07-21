@@ -23,6 +23,17 @@ def main(room_temperature, num_people, long_sleeve_count, short_sleeve_count, lo
     try:
         # ディレクトリ作成とパスの辞書を取得
         directory_paths = create_directories()
+        directory_paths.update({
+            "Strong_Cooling": os.path.join("Data", "Strong_Cooling"),
+            "Strong_Heating": os.path.join("Data", "Strong_Heating")
+        })
+
+        for key, path in directory_paths.items():
+            if not os.path.exists(path):
+                os.makedirs(path)
+                print(f"ディレクトリ '{path}' を作成しました。")
+            else:
+                print(f"ディレクトリ '{path}' は既に存在します。")
 
         # 各ディレクトリのデータを読み取る
         cold_data = read_data_file(os.path.join(directory_paths["Cold"], "data.txt"))
@@ -56,20 +67,17 @@ def main(room_temperature, num_people, long_sleeve_count, short_sleeve_count, lo
         lon = location['location']['lng']
 
         weather_info = get_current_weather(lat, lon, weather_api_key)
+        final_temperature = None  # 返す温度を保持する変数
         if weather_info is not None:
             print(f"緯度: {lat}, 経度: {lon}")
             print(f"現在の気温: {weather_info['temperature']}°C")
             print(f"天気: {weather_info['weather']}")
 
-            # 外気温が冷房の基準温度以上か暖房の基準温度以下かを確認して該当ファイルを表示
-            if weather_info['temperature'] >= cooling_threshold:
-                print("冷房")
-                read_and_display_file(os.path.join(directory_paths["Cold"], "data.txt"))
-            elif weather_info['temperature'] <= heating_threshold:
-                print("暖房")
-                read_and_display_file(os.path.join(directory_paths["Hot"], "data.txt"))
-            else:
-                print("冷房も暖房も必要ありません")
+            # 手動で部屋の温度を入力
+            try:
+                room_temperature = float(input("部屋の温度を入力してください (°C): "))
+                temperature_diff = abs(room_temperature - weather_info['temperature'])
+                print(f"部屋の温度と外気温の差: {temperature_diff}°C")
 
             # 部屋の温度を表示
             if room_temperature > weather_info['temperature']:
