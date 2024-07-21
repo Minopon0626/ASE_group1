@@ -7,7 +7,7 @@ import sys
 Sw_GPIO_1 = 23
 Sw_GPIO_2 = 21
 LED_GPIO_1 = 24
-LED_GPIO_2 = 5
+LED_GPIO_2 = 25
 
 # GPIOの設定
 GPIO.setmode(GPIO.BCM)
@@ -20,33 +20,41 @@ GPIO.setup(LED_GPIO_2, GPIO.OUT)
 
 # デバウンス処理のための時間（秒）
 debounce_time = 0.02  # 20ミリ秒
+# 点滅のための時間（秒）
+blink_interval = 0.5  # 0.5秒
 
 while True:
     try:
-        # GPIO23の入力を読み取る
+        # GPIO23とGPIO21の入力を読み取る
         switchStatus_1 = GPIO.input(Sw_GPIO_1)
-        if switchStatus_1 == 1:
-            # デバウンス処理
+        switchStatus_2 = GPIO.input(Sw_GPIO_2)
+        
+        if switchStatus_1 == 1 and switchStatus_2 == 1:
+            # 両方のスイッチが押されている場合
+            print("same time")
+            GPIO.output(LED_GPIO_1, GPIO.HIGH)  # LEDを点灯
+            GPIO.output(LED_GPIO_2, GPIO.HIGH)  # LEDを点灯
+            time.sleep(blink_interval)  # 点灯時間
+            GPIO.output(LED_GPIO_1, GPIO.LOW)   # LEDを消灯
+            GPIO.output(LED_GPIO_2, GPIO.LOW)   # LEDを消灯
+            time.sleep(blink_interval)  # 消灯時間
+            
+        elif switchStatus_1 == 1:
+            # GPIO23のスイッチのみが押されている場合
             time.sleep(debounce_time)
-            # 再度スイッチの状態を確認
             if GPIO.input(Sw_GPIO_1) == 1:
                 print("samui")
                 GPIO.output(LED_GPIO_1, GPIO.HIGH)  # LEDを点灯
-                # スイッチが離されるまで待機
                 while GPIO.input(Sw_GPIO_1) == 1:
                     time.sleep(0.1)
                 GPIO.output(LED_GPIO_1, GPIO.LOW)  # LEDを消灯
         
-        # GPIO21の入力を読み取る
-        switchStatus_2 = GPIO.input(Sw_GPIO_2)
-        if switchStatus_2 == 1:
-            # デバウンス処理
+        elif switchStatus_2 == 1:
+            # GPIO21のスイッチのみが押されている場合
             time.sleep(debounce_time)
-            # 再度スイッチの状態を確認
             if GPIO.input(Sw_GPIO_2) == 1:
                 print("atui")
                 GPIO.output(LED_GPIO_2, GPIO.HIGH)  # LEDを点灯
-                # スイッチが離されるまで待機
                 while GPIO.input(Sw_GPIO_2) == 1:
                     time.sleep(0.1)
                 GPIO.output(LED_GPIO_2, GPIO.LOW)  # LEDを消灯
