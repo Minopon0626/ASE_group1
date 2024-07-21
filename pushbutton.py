@@ -7,7 +7,7 @@ import sys
 Sw_GPIO_1 = 23
 Sw_GPIO_2 = 21
 LED_GPIO_1 = 24
-LED_GPIO_2 = 25
+LED_GPIO_2 = 5
 
 # GPIOの設定
 GPIO.setmode(GPIO.BCM)
