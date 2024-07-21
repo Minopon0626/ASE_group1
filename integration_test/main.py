@@ -2,6 +2,7 @@ import time  # timeモジュールをインポートして、時間関連の操�
 import os  # osモジュールをインポートして、OSとの対話を行う
 import sys
 import cv2
+import threading
 
 # 'algorithm'ディレクトリをシステムパスに追加
 sys.path.append(os.path.join(os.path.dirname(__file__), 'algorithm'))
@@ -18,19 +19,22 @@ import shutil  # shutilモジュールをインポートして、ファイル操
 from algorithm import algorithm_main  # algorithm.pyから必要な関数をインポート
 from algorithm import file_manager  # ディレクトリ作成とデータ更新関数をインポート
 
-def main():
-    # ディレクトリが存在しない場合は作成
-    log_dir = 'log'  # logディレクトリ名
+# カウント用のグローバル変数
+count = 0
+count_lock = threading.Lock()
+
+def capture_and_process_images():
+    global count
+    log_dir = 'log'
     current_dir = '.'
-    
+
     # outputディレクトリが存在しない場合は作成する
     create_or_find_output.create_or_find_output_dir(current_dir, log_dir)
     # logディレクトリが存在しない場合は作成する
 
     try:
-        # YOLOモデルを初期化
-        person_model = yolo_common.load_yolo_model('yolov8s')  # デフォルトのYOLOモデルをロード
-        sleeve_model = yolo_common.load_yolo_model('best')  # 半袖と長袖を識別するモデルをロード
+        person_model = yolo_common.load_yolo_model('yolov8s')
+        sleeve_model = yolo_common.load_yolo_model('best')
     except FileNotFoundError as e:
         print(e)
         return
@@ -38,45 +42,36 @@ def main():
     # 初期位置情報を取得
     location = algorithm_main.get_initial_location()
     # 室内温度のデフォルト値
-    room_temperature = 25.0  
-    status = 0  # 状態のデフォルト値 (unknown)
-    directory_paths = file_manager.create_directories()  # ディレクトリ作成
+    room_temperature = 25.0
+    status = 0
+    directory_paths = file_manager.create_directories()
 
-    while True:  # 無限ループを開始
-        # 画像を撮影
+    while True:
         print('画像撮影')
-        image_data, capture_image_path = photographing.capture_image_data()  # capture_image_data関数を使って画像データを取得
+        image_data, capture_image_path = photographing.capture_image_data()
         print('画像撮影完了')
+        
         if image_data is not None:
             print(f"Image data shape: {image_data.shape}")
-            # cv2.imwrite(capture_image_path, image_data)  # 画像データをファイルに保存
-        else:
-            print("No image data captured")
 
-        if image_data is not None:
-            # 現在時刻を取得する
             print('画像撮影に成功, なおかつimage_data is not None')
             timestamp = time_capture.get_current_timestamp()
             now_dir = create_or_find_output.create_or_find_output_dir(log_dir, timestamp)
 
-            # 画像データをnow_dirに保存
-            cv2.imwrite(capture_image_path, image_data)  # 画像データをファイルに保存
-            
-            # 人物検出を実行し、トリミングした画像を取得
+            cv2.imwrite(capture_image_path, image_data)
+
             number_of_people, person_images = person_detection.yolo_detect_and_cut_person(image_data, now_dir, person_model)
             print(f"検出された人数: {number_of_people}")
 
-            # もし1人以上の人が検出されたら、半袖と長袖の識別を実行
             if number_of_people > 0:
                 time.sleep(4)
                 short_sleeve_count = 0
                 long_sleeve_count = 0
                 unknown_count = 0
                 for person_image_path in person_images:
-                    # 画像データを読み込む
                     person_image = cv2.imread(person_image_path)
                     detected_sleeve = sleeve_detection.yolo_detect_and_cut_sleeve(person_image, now_dir, sleeve_model)
-                    print(f"人物 {person_images.index(person_image_path) + 1} の識別結果: {detected_sleeve}")  # デバッグ用に識別結果を表示
+                    print(f"人物 {person_images.index(person_image_path) + 1} の識別結果: {detected_sleeve}")
                     if detected_sleeve == "hansode":
                         short_sleeve_count += 1
                         print(f"人物 {person_images.index(person_image_path) + 1}: 半袖")
@@ -95,12 +90,32 @@ def main():
                     file_manager.update_data_file(room_temperature, cooling_threshold, heating_threshold, status, number_of_people, directory_paths)
                 
                 Infrared_rays_send.send_ir_command()
-                # 人が1人以上検出された場合、赤外線コマンドを送信する
+        
         
         # 20秒待機
+
+        # 20秒待機
         time.sleep(20)
-        # 20秒待機する
+
+def count_up():
+    global count
+    while True:
+        with count_lock:
+            count += 1
+        time.sleep(1)
+
+def print_count_on_input():
+    global count
+    while True:
+        user_input = input()
+        if user_input.lower() == 'p':
+            with count_lock:
+                print(f'カウント: {count}')
 
 if __name__ == "__main__":
-    main()
-    # スクリプトが直接実行された場合、main関数を実行する
+    threading.Thread(target=capture_and_process_images, daemon=True).start()
+    threading.Thread(target=count_up, daemon=True).start()
+    threading.Thread(target=print_count_on_input, daemon=True).start()
+
+    while True:
+        time.sleep(0.1)  # メインスレッドをアイドル状態にする
