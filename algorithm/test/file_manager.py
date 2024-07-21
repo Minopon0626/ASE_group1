@@ -41,12 +41,31 @@ def read_and_display_file(file_path):
         content = file.read()  # ファイル内容を読み取る
     print(f"{file_path} の内容:\n{content}")  # ファイル内容を表示する
 
-def update_data_file(room_temperature, cooling_threshold, heating_threshold, status, num_people, directory_paths):
+def determine_status(room_temperature, cooling_threshold, heating_threshold):
     # 室温が冷房の基準温度以上の場合
+    if room_temperature >= cooling_threshold:
+        if abs(room_temperature - cooling_threshold) <= 3:
+            return 2  # 寒い
+        else:
+            return 1  # 熱い
+    # 室温が暖房の基準温度以下の場合
+    elif room_temperature <= heating_threshold:
+        if abs(room_temperature - heating_threshold) <= 3:
+            return 2  # 寒い
+        else:
+            return 1  # 熱い
+    # 上記以外の場合は既存の状態を維持
+    return 0  # unknown
+
+def update_data_file(room_temperature, cooling_threshold, heating_threshold, status, num_people, directory_paths):
+    # 状態が unknown (0) の場合、新しい状態を決定
+    if status == 0:
+        status = determine_status(room_temperature, cooling_threshold, heating_threshold)
+
+    # データを書き込むファイルのパスを決定
     if room_temperature >= cooling_threshold:
         file_path = os.path.join(directory_paths["Cold"], "data.txt")  # 冷房用データファイルのパス
         setting_temperature = cooling_threshold  # 設定温度を冷房の基準温度に設定
-    # 室温が暖房の基準温度以下の場合
     elif room_temperature <= heating_threshold:
         file_path = os.path.join(directory_paths["Hot"], "data.txt")  # 暖房用データファイルのパス
         setting_temperature = heating_threshold  # 設定温度を暖房の基準温度に設定
