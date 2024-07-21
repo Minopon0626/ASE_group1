@@ -1,46 +1,35 @@
-from geolocation import get_wifi_info, get_location
-from weather import get_current_weather
-from file_manager import create_directories, read_data_file, read_and_display_file, update_data_file
-from temperature_calculator import calculate_temperature, validate_thresholds, adjust_temperature_for_people, calculate_person_adjustment, adjust_person_count
-import sys
-import os
+from geolocation import get_wifi_info, get_location  # 位置情報を取得する関数をインポート
+from weather import get_current_weather  # 天気情報を取得する関数をインポート
+from file_manager import create_directories, read_data_file, read_and_display_file, update_data_file  # ファイル管理関数をインポート
+from temperature_calculator import calculate_temperature, validate_thresholds, adjust_temperature_for_people, calculate_person_adjustment, adjust_person_count  # 温度計算関数をインポート
+import sys  # システム関連の機能を提供する標準ライブラリ
+import os  # ファイルやディレクトリの操作を行うための標準ライブラリ
 
 def get_initial_location():
-    google_api_key = "AIzaSyCGqNUFFIdsC9ZwABMIRVNmdmGfwILjODU"  # ここにGoogle APIキーを設定
+    google_api_key = "AIzaSyCGqNUFFIdsC9ZwABMIRVNmdmGfwILjODU"  # Google APIキーを設定
     wifi_info = get_wifi_info()  # Wi-Fiアクセスポイント情報を取得
     if not wifi_info:
-        print("Wi-Fiアクセスポイント情報が取得できませんでした。")
-        sys.exit(1)
+        print("Wi-Fiアクセスポイント情報が取得できませんでした。")  # Wi-Fi情報が取得できない場合のエラーメッセージ
+        sys.exit(1)  # プログラムを終了
 
     location = get_location(wifi_info, google_api_key)  # 位置情報を取得
-    return location
+    return location  # 位置情報を返す
 
 def main(room_temperature, num_people, long_sleeve_count, short_sleeve_count, location):
-    weather_api_key = "69c99674130d87692972008a78fff1e0"  # ここにOpenWeatherMap APIキーを設定
-    long_sleeve_rate = 1.0  # 長袖の温度変化率
-    short_sleeve_rate = 0.5  # 半袖の温度変化率
+    weather_api_key = "69c99674130d87692972008a78fff1e0"  # OpenWeatherMap APIキーを設定
+    long_sleeve_rate = 1.0  # 長袖の温度変化率を設定
+    short_sleeve_rate = 0.5  # 半袖の温度変化率を設定
 
     try:
         # ディレクトリ作成とパスの辞書を取得
         directory_paths = create_directories()
-        directory_paths.update({
-            "Strong_Cooling": os.path.join("Data", "Strong_Cooling"),
-            "Strong_Heating": os.path.join("Data", "Strong_Heating")
-        })
-
-        for key, path in directory_paths.items():
-            if not os.path.exists(path):
-                os.makedirs(path)
-                print(f"ディレクトリ '{path}' を作成しました。")
-            else:
-                print(f"ディレクトリ '{path}' は既に存在します。")
 
         # 各ディレクトリのデータを読み取る
         cold_data = read_data_file(os.path.join(directory_paths["Cold"], "data.txt"))
         hot_data = read_data_file(os.path.join(directory_paths["Hot"], "data.txt"))
 
-        print(f"Cold data: {cold_data}")  # デバッグメッセージ
-        print(f"Hot data: {hot_data}")    # デバッグメッセージ
+        print(f"Cold data: {cold_data}")  # デバッグメッセージ：冷房データを表示
+        print(f"Hot data: {hot_data}")    # デバッグメッセージ：暖房データを表示
 
         # 冷房と暖房の設定温度を計算
         cooling_threshold = calculate_temperature(cold_data, 'cooling')
@@ -63,21 +52,24 @@ def main(room_temperature, num_people, long_sleeve_count, short_sleeve_count, lo
         # 定数として設定された冷房と暖房の基準温度を検証
         validate_thresholds(cooling_threshold, heating_threshold)
 
-        lat = location['location']['lat']
-        lon = location['location']['lng']
+        lat = location['location']['lat']  # 緯度を取得
+        lon = location['location']['lng']  # 経度を取得
 
-        weather_info = get_current_weather(lat, lon, weather_api_key)
-        final_temperature = None  # 返す温度を保持する変数
+        weather_info = get_current_weather(lat, lon, weather_api_key)  # 現在の天気情報を取得
         if weather_info is not None:
-            print(f"緯度: {lat}, 経度: {lon}")
-            print(f"現在の気温: {weather_info['temperature']}°C")
-            print(f"天気: {weather_info['weather']}")
+            print(f"緯度: {lat}, 経度: {lon}")  # 取得した緯度経度を表示
+            print(f"現在の気温: {weather_info['temperature']}°C")  # 現在の気温を表示
+            print(f"天気: {weather_info['weather']}")  # 現在の天気を表示
 
-            # 手動で部屋の温度を入力
-            try:
-                room_temperature = float(input("部屋の温度を入力してください (°C): "))
-                temperature_diff = abs(room_temperature - weather_info['temperature'])
-                print(f"部屋の温度と外気温の差: {temperature_diff}°C")
+            # 外気温が冷房の基準温度以上か暖房の基準温度以下かを確認して該当ファイルを表示
+            if weather_info['temperature'] >= cooling_threshold:
+                print("冷房")
+                read_and_display_file(os.path.join(directory_paths["Cold"], "data.txt"))
+            elif weather_info['temperature'] <= heating_threshold:
+                print("暖房")
+                read_and_display_file(os.path.join(directory_paths["Hot"], "data.txt"))
+            else:
+                print("冷房も暖房も必要ありません")
 
             # 部屋の温度を表示
             if room_temperature > weather_info['temperature']:
@@ -106,8 +98,8 @@ if __name__ == "__main__":
     location = get_initial_location()
 
     # デバッグ用のデフォルト値
-    room_temperature = 25.0
-    num_people = 5
-    long_sleeve_count = 3  # 長袖を着ている人数
-    short_sleeve_count = 2  # 半袖を着ている人数
+    room_temperature = 25.0  # 室内温度のデフォルト値
+    num_people = 5  # 人数のデフォルト値
+    long_sleeve_count = 3  # 長袖を着ている人数のデフォルト値
+    short_sleeve_count = 2  # 半袖を着ている人数のデフォルト値
     main(room_temperature, num_people, long_sleeve_count, short_sleeve_count, location)
