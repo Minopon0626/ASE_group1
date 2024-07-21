@@ -6,7 +6,7 @@ import sys  # システム関連の機能を提供する標準ライブラリ
 import os  # ファイルやディレクトリの操作を行うための標準ライブラリ
 
 def get_initial_location():
-    google_api_key = "YOUR_GOOGLE_API_KEY"  # Google APIキーを設定
+    google_api_key = "AIzaSyCGqNUFFIdsC9ZwABMIRVNmdmGfwILjODU"  # Google APIキーを設定
     wifi_info = get_wifi_info()  # Wi-Fiアクセスポイント情報を取得
     if not wifi_info:
         print("Wi-Fiアクセスポイント情報が取得できませんでした。")  # Wi-Fi情報が取得できない場合のエラーメッセージ
@@ -16,7 +16,7 @@ def get_initial_location():
     return location  # 位置情報を返す
 
 def process_data(room_temperature, num_people, long_sleeve_count, short_sleeve_count, status, location, directory_paths):
-    weather_api_key = "YOUR_OPENWEATHERMAP_API_KEY"  # OpenWeatherMap APIキーを設定
+    weather_api_key = "69c99674130d87692972008a78fff1e0"  # OpenWeatherMap APIキーを設定
     long_sleeve_rate = 1.0  # 長袖の温度変化率を設定
     short_sleeve_rate = 0.5  # 半袖の温度変化率を設定
 
