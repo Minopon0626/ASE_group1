@@ -15,7 +15,7 @@ from file_system import create_or_find_output  # create_or_find_outputモジュ�
 from ir import Infrared_rays_send  # Infrared_rays_sendモジュールをインポート
 from capture import time_capture  # time_captureモジュールをインポート
 import shutil  # shutilモジュールをインポートして、ファイル操作を行う
-from algorithm import algorithm  # algorithm.pyから必要な関数をインポート
+from ASE_group1.integration_test.algorithm import algorithm_main  # algorithm.pyから必要な関数をインポート
 from algorithm import file_manager  # ディレクトリ作成とデータ更新関数をインポート
 
 def main():
@@ -36,7 +36,7 @@ def main():
         return
 
     # 初期位置情報を取得
-    location = algorithm.get_initial_location()
+    location = algorithm_main.get_initial_location()
     # 室内温度のデフォルト値
     room_temperature = 25.0  
     status = 0  # 状態のデフォルト値 (unknown)
@@ -81,7 +81,7 @@ def main():
                 
                 print(f"総計 - 半袖: {short_sleeve_count}, 長袖: {long_sleeve_count}, 不明: {unknown_count}")
                 
-                cooling_threshold, heating_threshold, status = algorithm.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, status, location, directory_paths)
+                cooling_threshold, heating_threshold, status = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, status, location, directory_paths)
                 
                 if cooling_threshold is not None and heating_threshold is not None:
                     file_manager.update_data_file(room_temperature, cooling_threshold, heating_threshold, status, number_of_people, directory_paths)
