@@ -44,7 +44,7 @@ while True:
 
                 same = 0
             
-        elif switchStatus_1 == 1 and same = 0:
+        elif switchStatus_1 == 1 and same == 0:
             # GPIO23のスイッチのみが押されている場合
             time.sleep(debounce_time)
             if GPIO.input(Sw_GPIO_1) == 1:
@@ -54,7 +54,7 @@ while True:
                     time.sleep(0.1)
                 GPIO.output(LED_GPIO_1, GPIO.LOW)  # LEDを消灯
         
-        elif switchStatus_2 == 1 and same = 0:
+        elif switchStatus_2 == 1 and same == 0:
             # GPIO21のスイッチのみが押されている場合
             time.sleep(debounce_time)
             if GPIO.input(Sw_GPIO_2) == 1:
