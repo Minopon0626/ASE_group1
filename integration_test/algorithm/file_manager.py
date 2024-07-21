@@ -5,8 +5,9 @@ def create_directories():
     current_dir = os.path.dirname(__file__)
     
     # ディレクトリパスを作成
-    cold_dir = os.path.join(current_dir, 'Cold')
-    hot_dir = os.path.join(current_dir, 'Hot')
+    data_dir = os.path.join(current_dir, 'Data')
+    cold_dir = os.path.join(data_dir, 'Cold')
+    hot_dir = os.path.join(data_dir, 'Hot')
     
     # ディレクトリが存在しない場合は作成
     if not os.path.exists(cold_dir):
