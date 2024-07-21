@@ -2,9 +2,11 @@ import time  # timeモジュールをインポートして、時間関連の操�
 import os  # osモジュールをインポートして、OSとの対話を行う
 import sys
 import cv2
-# 'detection' ディレクトリをシステムパスに追加
+
+# 'algorithm'ディレクトリをシステムパスに追加
+sys.path.append(os.path.join(os.path.dirname(__file__), 'algorithm'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'detection'))
-sys.path.append(os.path.join(os.path.dirname(__file__), 'algorithm'))  # 'algorithm'ディレクトリをシステムパスに追加
+
 from capture import photographing  # photographing.pyからcapture_image関数をインポート
 from detection import yolo_common  # yolo_common.pyからload_yolo_model関数をインポート
 from detection import person_detection  # person_detection.pyからyolo_detect_and_cut_person関数をインポート
@@ -13,8 +15,8 @@ from file_system import create_or_find_output  # create_or_find_outputモジュ�
 from ir import Infrared_rays_send  # Infrared_rays_sendモジュールをインポート
 from capture import time_capture  # time_captureモジュールをインポート
 import shutil  # shutilモジュールをインポートして、ファイル操作を行う
-from algorithm import process_data, get_initial_location  # algorithm.pyから必要な関数をインポート
-from file_manager import create_directories, update_data_file  # ディレクトリ作成とデータ更新関数をインポート
+from algorithm.algorithm import process_data, get_initial_location  # algorithm.pyから必要な関数をインポート
+from algorithm.file_manager import create_directories, update_data_file  # ディレクトリ作成とデータ更新関数をインポート
 
 def main():
     # ディレクトリが存在しない場合は作成

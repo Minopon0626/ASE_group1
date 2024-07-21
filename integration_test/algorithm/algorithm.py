@@ -1,7 +1,7 @@
-from algorithm.geolocation import get_wifi_info, get_location  # 位置情報を取得する関数をインポート
-from algorithm.weather import get_current_weather  # 天気情報を取得する関数をインポート
-from algorithm.temperature_calculator import calculate_temperature, validate_thresholds, adjust_temperature_for_people, calculate_person_adjustment, adjust_person_count  # 温度計算関数をインポート
-from algorithm.file_manager import read_data_file, read_and_display_file
+from geolocation import get_wifi_info, get_location  # 位置情報を取得する関数をインポート
+from weather import get_current_weather  # 天気情報を取得する関数をインポート
+from temperature_calculator import calculate_temperature, validate_thresholds, adjust_temperature_for_people, calculate_person_adjustment, adjust_person_count  # 温度計算関数をインポート
+from file_manager import read_data_file, read_and_display_file
 import sys  # システム関連の機能を提供する標準ライブラリ
 import os  # ファイルやディレクトリの操作を行うための標準ライブラリ
 
