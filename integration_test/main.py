@@ -87,15 +87,6 @@ def capture_and_process_images():
                 
                 Infrared_rays_send.send_ir_command()
         
-        # handle_switches へのデータを送信
-        data_to_send = {
-            "number_of_people": number_of_people,
-            "short_sleeve_count": short_sleeve_count,
-            "long_sleeve_count": long_sleeve_count,
-            "unknown_count": unknown_count
-        }
-        shared_queue.put(data_to_send)
-        
         # handle_switches からのデータをチェック
         if not shared_queue.empty():
             data_received = shared_queue.get()
