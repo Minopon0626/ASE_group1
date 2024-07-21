@@ -15,7 +15,7 @@ from file_system import create_or_find_output  # create_or_find_outputモジュ�
 from ir import Infrared_rays_send  # Infrared_rays_sendモジュールをインポート
 from capture import time_capture  # time_captureモジュールをインポート
 import shutil  # shutilモジュールをインポートして、ファイル操作を行う
-from ASE_group1.integration_test.algorithm import algorithm_main  # algorithm.pyから必要な関数をインポート
+from algorithm import algorithm_main  # algorithm.pyから必要な関数をインポート
 from algorithm import file_manager  # ディレクトリ作成とデータ更新関数をインポート
 
 def main():
