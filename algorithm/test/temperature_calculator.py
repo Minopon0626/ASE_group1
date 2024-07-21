@@ -5,8 +5,8 @@ def validate_thresholds(cooling_threshold, heating_threshold):
         raise ValueError("エラー: 冷房の基準温度は暖房の基準温度以上でなければなりません (cooling_threshold >= heating_threshold)")
 
 def calculate_temperature(data, mode):
-    sum_0_2 = 0
-    count_0_2 = 0
+    sum_2 = 0
+    count_2 = 0
     sum_1 = 0
     count_1 = 0
 
@@ -17,31 +17,31 @@ def calculate_temperature(data, mode):
         input_value = int(input_value)
 
         if mode == 'cooling':
-            if input_value in [0, 2]:
-                sum_0_2 += temperature
-                count_0_2 += 1
+            if input_value == 2:
+                sum_2 += temperature
+                count_2 += 1
             elif input_value == 1:
                 sum_1 += temperature
                 count_1 += 1
         elif mode == 'heating':
-            if input_value in [0, 1]:
-                sum_0_2 += temperature
-                count_0_2 += 1
-            elif input_value == 2:
+            if input_value == 1:
                 sum_1 += temperature
                 count_1 += 1
+            elif input_value == 2:
+                sum_2 += temperature
+                count_2 += 1
 
-    if count_0_2 == 0 or count_1 == 0:
+    if count_2 == 0 or count_1 == 0:
         if mode == 'cooling':
-            print(f"Calculation failed for cooling: count_0_2={count_0_2}, count_1={count_1}")  # デバッグメッセージ
+            print(f"Calculation failed for cooling: count_2={count_2}, count_1={count_1}")  # デバッグメッセージ
         elif mode == 'heating':
-            print(f"Calculation failed for heating: count_0_2={count_0_2}, count_1={count_1}")  # デバッグメッセージ
+            print(f"Calculation failed for heating: count_2={count_2}, count_1={count_1}")  # デバッグメッセージ
         return None  # 計算できない場合
 
-    average_0_2 = sum_0_2 / count_0_2
+    average_2 = sum_2 / count_2
     average_1 = sum_1 / count_1
-    print(f"Averages for {mode}: average_0_2={average_0_2}, average_1={average_1}")  # デバッグメッセージ
-    return (average_0_2 + average_1) / 2
+    print(f"Averages for {mode}: average_2={average_2}, average_1={average_1}")  # デバッグメッセージ
+    return (average_2 + average_1) / 2
 
 def adjust_temperature_for_people(cooling_threshold, heating_threshold, person_adjustment):
     adjusted_cooling = cooling_threshold - person_adjustment

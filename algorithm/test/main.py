@@ -1,6 +1,6 @@
 from geolocation import get_wifi_info, get_location
 from weather import get_current_weather
-from file_manager import create_directories, read_data_file, read_and_display_file
+from file_manager import create_directories, read_data_file, read_and_display_file, update_data_file
 from temperature_calculator import calculate_temperature, validate_thresholds, adjust_temperature_for_people, calculate_person_adjustment, adjust_person_count
 import sys
 import os
@@ -74,12 +74,21 @@ def main(room_temperature, num_people, long_sleeve_count, short_sleeve_count, lo
             # 部屋の温度を表示
             if room_temperature > weather_info['temperature']:
                 print(f"部屋の温度 {room_temperature}°C は現在の気温 {weather_info['temperature']}°C より高いです。")
+                status = 1  # 部屋が外より熱い
             elif room_temperature < weather_info['temperature']:
                 print(f"部屋の温度 {room_temperature}°C は現在の気温 {weather_info['temperature']}°C より低いです。")
+                status = 2  # 部屋が外より寒い
             else:
                 print(f"部屋の温度 {room_temperature}°C は現在の気温 {weather_info['temperature']}°C と同じです。")
+                status = 1  # 部屋と外が同じ温度とする
+
         else:
             print("気温と天気を取得できませんでした。")
+            status = 1  # デフォルトの状態を1とする
+
+        # データファイルを更新
+        update_data_file(room_temperature, cooling_threshold, heating_threshold, status, num_people, directory_paths)
+
     except ValueError as e:
         print(e)
 
