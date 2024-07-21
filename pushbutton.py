@@ -25,6 +25,7 @@ blink_interval = 0.5  # 0.5秒
 
 while True:
     try:
+        same = 0
         # GPIO23とGPIO21の入力を読み取る
         switchStatus_1 = GPIO.input(Sw_GPIO_1)
         switchStatus_2 = GPIO.input(Sw_GPIO_2)
@@ -41,8 +42,6 @@ while True:
                     GPIO.output(LED_GPIO_1, GPIO.LOW)   # LEDを消灯
                     time.sleep(blink_interval)  # 消灯時間
                 GPIO.output(LED_GPIO_1, GPIO.LOW)   # LEDを消灯
-
-                same = 0
             
         elif switchStatus_1 == 1 and same == 0:
             # GPIO23のスイッチのみが押されている場合
