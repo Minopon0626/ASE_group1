@@ -5,7 +5,7 @@ import sys
 
 # ポート番号の定義
 Sw_GPIO_1 = 23
-Sw_GPIO_2 = 21
+Sw_GPIO_2 = 25
 LED_GPIO_1 = 24
 
 same = 0 #同時押しの値
