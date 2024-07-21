@@ -1,30 +1,24 @@
 import os  # ファイルやディレクトリの操作を行うための標準ライブラリ
 
 def create_directories():
-    base_dir = "Data"  # データを保存するベースディレクトリ名
-    hot_dir = os.path.join(base_dir, "Hot")  # 暖房用データを保存するディレクトリのパス
-    cold_dir = os.path.join(base_dir, "Cold")  # 冷房用データを保存するディレクトリのパス
-
-    directories = {
-        "Hot": hot_dir,  # ディレクトリ辞書に暖房用ディレクトリを追加
-        "Cold": cold_dir  # ディレクトリ辞書に冷房用ディレクトリを追加
-    }
-
-    # 暖房用ディレクトリが存在しない場合は作成
-    if not os.path.exists(hot_dir):
-        os.makedirs(hot_dir)
-        print(f"ディレクトリ '{hot_dir}' を作成しました。")
-    else:
-        print(f"ディレクトリ '{hot_dir}' は既に存在します。")
-
-    # 冷房用ディレクトリが存在しない場合は作成
+    # 現在のディレクトリパスを取得
+    current_dir = os.path.dirname(__file__)
+    
+    # ディレクトリパスを作成
+    cold_dir = os.path.join(current_dir, 'Cold')
+    hot_dir = os.path.join(current_dir, 'Hot')
+    
+    # ディレクトリが存在しない場合は作成
     if not os.path.exists(cold_dir):
         os.makedirs(cold_dir)
-        print(f"ディレクトリ '{cold_dir}' を作成しました。")
-    else:
-        print(f"ディレクトリ '{cold_dir}' は既に存在します。")
-
-    return directories  # ディレクトリパスの辞書を返す
+    if not os.path.exists(hot_dir):
+        os.makedirs(hot_dir)
+    
+    # ディレクトリパスを辞書として返す
+    return {
+        "Cold": cold_dir,
+        "Hot": hot_dir
+    }
 
 def read_data_file(file_path):
     data = []  # データを格納するリスト
