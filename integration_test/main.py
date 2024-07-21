@@ -9,7 +9,7 @@ import queue
 sys.path.append(os.path.join(os.path.dirname(__file__), 'algorithm'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'detection'))
 
-from pushbutton import setup_gpio, cleanup_gpio, handle_switches, shared_queue
+from pushbutton import setup_gpio, handle_switches, shared_queue
 from capture import photographing  # photographing.pyからcapture_image関数をインポート
 from detection import yolo_common  # yolo_common.pyからload_yolo_model関数をインポート
 from detection import person_detection  # person_detection.pyからyolo_detect_and_cut_person関数をインポート
