@@ -32,7 +32,7 @@ while True:
             if GPIO.input(Sw_GPIO_1) == 1 and GPIO.input(Sw_GPIO_2) == 1:
             # 両方のスイッチが押されている場合
                 print("same time")
-                while GPIO.input(Sw_GPIO_1) == 1 and GPIO.input(Sw_GPIO_1) == 1:
+                while GPIO.input(Sw_GPIO_1) == 1 and GPIO.input(Sw_GPIO_2) == 1:
                     GPIO.output(LED_GPIO_1, GPIO.HIGH)  # LEDを点灯
                     time.sleep(blink_interval)  # 点灯時間
                     GPIO.output(LED_GPIO_1, GPIO.LOW)   # LEDを消灯
