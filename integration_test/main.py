@@ -44,10 +44,18 @@ def main():
 
     while True:  # 無限ループを開始
         # 画像を撮影
+        print('画像撮影')
         image_data, capture_image_path = photographing.capture_image_data()  # capture_image_data関数を使って画像データを取得
-        
+        print('画像撮影完了')
+        if image_data is not None:
+            print(f"Image data shape: {image_data.shape}")
+            # cv2.imwrite(capture_image_path, image_data)  # 画像データをファイルに保存
+        else:
+            print("No image data captured")
+
         if image_data is not None:
             # 現在時刻を取得する
+            print('画像撮影に成功, なおかつimage_data is not None')
             timestamp = time_capture.get_current_timestamp()
             now_dir = create_or_find_output.create_or_find_output_dir(log_dir, timestamp)
 
