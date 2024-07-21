@@ -3,11 +3,13 @@ import os  # osモジュールをインポートして、OSとの対話を行う
 import sys
 import cv2
 import threading
+import queue
 
 # 'algorithm'ディレクトリをシステムパスに追加
 sys.path.append(os.path.join(os.path.dirname(__file__), 'algorithm'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'detection'))
 
+from pushbutton import setup_gpio, cleanup_gpio, handle_switches, shared_queue
 from capture import photographing  # photographing.pyからcapture_image関数をインポート
 from detection import yolo_common  # yolo_common.pyからload_yolo_model関数をインポート
 from detection import person_detection  # person_detection.pyからyolo_detect_and_cut_person関数をインポート
@@ -19,15 +21,10 @@ import shutil  # shutilモジュールをインポートして、ファイル操
 from algorithm import algorithm_main  # algorithm.pyから必要な関数をインポート
 from algorithm import file_manager  # ディレクトリ作成とデータ更新関数をインポート
 
-# カウント用のグローバル変数
-count = 0
-count_lock = threading.Lock()
+log_dir = 'log'
+current_dir = '.'
 
 def capture_and_process_images():
-    global count
-    log_dir = 'log'
-    current_dir = '.'
-
     # outputディレクトリが存在しない場合は作成する
     create_or_find_output.create_or_find_output_dir(current_dir, log_dir)
     # logディレクトリが存在しない場合は作成する
@@ -43,7 +40,6 @@ def capture_and_process_images():
     location = algorithm_main.get_initial_location()
     # 室内温度のデフォルト値
     room_temperature = 25.0
-    status = 0
     directory_paths = file_manager.create_directories()
 
     while True:
@@ -84,38 +80,41 @@ def capture_and_process_images():
                 
                 print(f"総計 - 半袖: {short_sleeve_count}, 長袖: {long_sleeve_count}, 不明: {unknown_count}")
                 
-                cooling_threshold, heating_threshold, status = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, status, location, directory_paths)
+                cooling_threshold, heating_threshold, status = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, 0, location, directory_paths)
                 
-                if cooling_threshold is not None and heating_threshold is not None:
-                    file_manager.update_data_file(room_temperature, cooling_threshold, heating_threshold, status, number_of_people, directory_paths)
+                # if cooling_threshold is not None and heating_threshold is not None:
+                #     file_manager.update_data_file(room_temperature, cooling_threshold, heating_threshold, status, number_of_people, directory_paths)
                 
                 Infrared_rays_send.send_ir_command()
         
+        # handle_switches へのデータを送信
+        data_to_send = {
+            "number_of_people": number_of_people,
+            "short_sleeve_count": short_sleeve_count,
+            "long_sleeve_count": long_sleeve_count,
+            "unknown_count": unknown_count
+        }
+        shared_queue.put(data_to_send)
         
-        # 20秒待機
+        # handle_switches からのデータをチェック
+        if not shared_queue.empty():
+            data_received = shared_queue.get()
+            print(f"capture_and_process_imagesで受信したデータ: {data_received}")
+            # 受信データが 0, 1, 2 の場合、"3"を書き込む
+            if data_received in [0, 1, 2]:
+                with open("output.txt", "a") as f:
+                    f.write("3\n")
+                # update_data_fileを呼び出す
+                cooling_threshold, heating_threshold, status = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, 0, location, directory_paths)
+                file_manager.update_data_file(room_temperature, cooling_threshold, heating_threshold, data_received, number_of_people, directory_paths)
 
         # 20秒待機
         time.sleep(20)
 
-def count_up():
-    global count
-    while True:
-        with count_lock:
-            count += 1
-        time.sleep(1)
-
-def print_count_on_input():
-    global count
-    while True:
-        user_input = input()
-        if user_input.lower() == 'p':
-            with count_lock:
-                print(f'カウント: {count}')
-
 if __name__ == "__main__":
+    setup_gpio()
     threading.Thread(target=capture_and_process_images, daemon=True).start()
-    threading.Thread(target=count_up, daemon=True).start()
-    threading.Thread(target=print_count_on_input, daemon=True).start()
+    threading.Thread(target=handle_switches, daemon=True).start()
 
     while True:
         time.sleep(0.1)  # メインスレッドをアイドル状態にする
