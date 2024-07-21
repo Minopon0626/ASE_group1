@@ -13,8 +13,8 @@ from file_system import create_or_find_output  # create_or_find_outputモジュ�
 from ir import Infrared_rays_send  # Infrared_rays_sendモジュールをインポート
 from capture import time_capture  # time_captureモジュールをインポート
 import shutil  # shutilモジュールをインポートして、ファイル操作を行う
-from algorithm.algorithm import process_data, get_initial_location  # algorithm.pyから必要な関数をインポート
-from algorithm.file_manager import create_directories, update_data_file  # ディレクトリ作成とデータ更新関数をインポート
+from algorithm import process_data, get_initial_location  # algorithm.pyから必要な関数をインポート
+from file_manager import create_directories, update_data_file  # ディレクトリ作成とデータ更新関数をインポート
 
 def main():
     # ディレクトリが存在しない場合は作成
