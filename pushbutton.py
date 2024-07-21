@@ -23,6 +23,8 @@ debounce_time = 0.02  # 20ミリ秒
 # 点滅のための時間（秒）
 blink_interval = 0.5  # 0.5秒
 
+stabilize_time = 10
+
 while True:
     try:
         same = 0
@@ -42,6 +44,9 @@ while True:
                     GPIO.output(LED_GPIO_1, GPIO.LOW)   # LEDを消灯
                     time.sleep(blink_interval)  # 消灯時間
                 GPIO.output(LED_GPIO_1, GPIO.LOW)   # LEDを消灯
+
+            # 同時押し解除後の安定化待機
+            time.sleep(stabilize_time)
             
         elif switchStatus_1 == 1 and same == 0:
             # GPIO23のスイッチのみが押されている場合
