@@ -1,29 +1,20 @@
-# coding: utf-8
-import RPi.GPIO as GPIO
+#タクトスイッチが押下された時の処理
+
 import time
 
-BUTTON_PIN = 21
+#GPIOの初期設定
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
 
-def main():
-    GPIO.setwarnings(False)
-    # Set the layout for the pin declaration
-    GPIO.setmode(GPIO.BCM)
-    # BCMの21番ピンを入力に設定
-    GPIO.setup(BUTTON_PIN,GPIO.IN) 
-    # callback登録（GIO.FALLING:立下りエッジ検出、bouncetime:300ms）
-    GPIO.add_event_detect(BUTTON_PIN, GPIO.FALLING, callback=callback, bouncetime=300)
+#GPIO18を入力端子設定
+GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    try:
-        while(True):
-            time.sleep(1)
+while True:
+    #スイッチ押下待ち
+    GPIO.wait_for_edge(18, GPIO.FALLING)
 
-    # Keyboard入力があれば終わり
-    except KeyboardInterrupt:
-        print("break")
-        GPIO.cleanup()
+    #画面出力
+    print('スイッチON!')
 
-def callback(channel):
-  print("button pushed %s"%channel)
-
-if __name__ == "__main__":
-    main()
+    #チャタリング対策
+    time.sleep(0.3)
