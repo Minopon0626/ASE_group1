@@ -8,6 +8,8 @@ Sw_GPIO_1 = 23
 Sw_GPIO_2 = 21
 LED_GPIO_1 = 24
 
+same = 0 #同時押しの値
+
 # GPIOの設定
 GPIO.setmode(GPIO.BCM)
 # GPIO23とGPIO21を入力モードに設定してプルダウン抵抗を有効にする
@@ -30,6 +32,7 @@ while True:
         if switchStatus_1 == 1 and switchStatus_2 == 1:
             time.sleep(debounce_time)
             if GPIO.input(Sw_GPIO_1) == 1 and GPIO.input(Sw_GPIO_2) == 1:
+                same = 1
             # 両方のスイッチが押されている場合
                 print("same time")
                 while GPIO.input(Sw_GPIO_1) == 1 and GPIO.input(Sw_GPIO_2) == 1:
@@ -38,9 +41,10 @@ while True:
                     GPIO.output(LED_GPIO_1, GPIO.LOW)   # LEDを消灯
                     time.sleep(blink_interval)  # 消灯時間
                 GPIO.output(LED_GPIO_1, GPIO.LOW)   # LEDを消灯
-                return
+
+                same = 0
             
-        elif switchStatus_1 == 1:
+        elif switchStatus_1 == 1 and same = 0:
             # GPIO23のスイッチのみが押されている場合
             time.sleep(debounce_time)
             if GPIO.input(Sw_GPIO_1) == 1:
@@ -50,7 +54,7 @@ while True:
                     time.sleep(0.1)
                 GPIO.output(LED_GPIO_1, GPIO.LOW)  # LEDを消灯
         
-        elif switchStatus_2 == 1:
+        elif switchStatus_2 == 1 and same = 0:
             # GPIO21のスイッチのみが押されている場合
             time.sleep(debounce_time)
             if GPIO.input(Sw_GPIO_2) == 1:
