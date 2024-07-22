@@ -68,7 +68,7 @@ def capture_and_process_images():
 
             # 人物検出
             #number_of_people, person_images = person_detection.yolo_detect_and_cut_person(image_data, now_dir, person_model)
-            number_of_people = short_sleeve_count + long_sleeve_count + unknown_count
+            number_of_people = short_sleeve_count + long_sleeve_count
             print(f"検出された人数: {number_of_people}")
 
             cooling_threshold, heating_threshold, status = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, 0, location, directory_paths)
