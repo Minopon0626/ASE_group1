@@ -27,7 +27,6 @@ current_dir = '.'
 def capture_and_process_images():
     # outputディレクトリが存在しない場合は作成する
     create_or_find_output.create_or_find_output_dir(current_dir, log_dir)
-    # logディレクトリが存在しない場合は作成する
 
     try:
         person_model = yolo_common.load_yolo_model('yolov8s')
@@ -56,36 +55,27 @@ def capture_and_process_images():
 
             cv2.imwrite(capture_image_path, image_data)
 
+            # 袖の検出を直接撮影した画像に対して行う
+            detected_sleeves = sleeve_detection.yolo_detect_and_cut_sleeve(image_data, now_dir, sleeve_model)
+            print(f"袖の検出結果: {detected_sleeves}")
+
+            # 袖の検出結果に基づく処理
+            short_sleeve_count = detected_sleeves.count("hansode")
+            long_sleeve_count = detected_sleeves.count("nagasode")
+            unknown_count = detected_sleeves.count("unknown")
+
+            print(f"総計 - 半袖: {short_sleeve_count}, 長袖: {long_sleeve_count}, 不明: {unknown_count}")
+
+            # 人物検出
             number_of_people, person_images = person_detection.yolo_detect_and_cut_person(image_data, now_dir, person_model)
             print(f"検出された人数: {number_of_people}")
 
-            if number_of_people > 0:
-                time.sleep(4)
-                short_sleeve_count = 0
-                long_sleeve_count = 0
-                unknown_count = 0
-                for person_image_path in person_images:
-                    person_image = cv2.imread(person_image_path)
-                    detected_sleeve = sleeve_detection.yolo_detect_and_cut_sleeve(person_image, now_dir, sleeve_model)
-                    print(f"人物 {person_images.index(person_image_path) + 1} の識別結果: {detected_sleeve}")
-                    if detected_sleeve == "hansode":
-                        short_sleeve_count += 1
-                        print(f"人物 {person_images.index(person_image_path) + 1}: 半袖")
-                    elif detected_sleeve == "nagasode":
-                        long_sleeve_count += 1
-                        print(f"人物 {person_images.index(person_image_path) + 1}: 長袖")
-                    else:
-                        unknown_count += 1
-                        print(f"人物 {person_images.index(person_image_path) + 1}: 不明")
-                
-                print(f"総計 - 半袖: {short_sleeve_count}, 長袖: {long_sleeve_count}, 不明: {unknown_count}")
-                
-                cooling_threshold, heating_threshold, status = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, 0, location, directory_paths)
-                
-                # if cooling_threshold is not None and heating_threshold is not None:
-                #     file_manager.update_data_file(room_temperature, cooling_threshold, heating_threshold, status, number_of_people, directory_paths)
-                
-                Infrared_rays_send.send_ir_command()
+            cooling_threshold, heating_threshold, status = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, 0, location, directory_paths)
+            
+            # if cooling_threshold is not None and heating_threshold is not None:
+            #     file_manager.update_data_file(room_temperature, cooling_threshold, heating_threshold, status, number_of_people, directory_paths)
+            
+            Infrared_rays_send.send_ir_command()
         
         # handle_switches からのデータをチェック
         if not shared_queue.empty():
