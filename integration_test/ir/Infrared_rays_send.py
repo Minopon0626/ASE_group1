@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-def send_ir_command(signal_name = "light:on"):
+def send_ir_command(signal_name = 'light:on'):
     """
     cgirツールを使用して指定された赤外線コマンドを送信します。
     
@@ -24,4 +24,4 @@ def send_ir_command(signal_name = "light:on"):
     print("標準エラー:", result.stderr)
 
 if __name__ == "__main__":
-    send_ir_command("light:on")
+    send_ir_command('light:on')
