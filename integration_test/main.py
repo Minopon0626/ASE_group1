@@ -71,11 +71,22 @@ def capture_and_process_images():
             number_of_people = short_sleeve_count + long_sleeve_count
             print(f"検出された人数: {number_of_people}")
 
-            cooling_threshold, heating_threshold, status = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, 0, location, directory_paths)
+            cooling_threshold, heating_threshold, status, aircon_instructions = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, 0, location, directory_paths)
             
             # if cooling_threshold is not None and heating_threshold is not None:
             #     file_manager.update_data_file(room_temperature, cooling_threshold, heating_threshold, status, number_of_people, directory_paths)
             
+            if aircon_instructions == 0:
+                #冷房かける
+                print('冷房かける')
+            if aircon_instructions == 1:
+                #何もしない
+                print('エアコン停止')
+            if aircon_instructions == 2:
+                #暖房かける
+                print('暖房かける')
+            
+
             Infrared_rays_send.send_ir_command()
         
         # handle_switches からのデータをチェック
@@ -87,7 +98,7 @@ def capture_and_process_images():
                 with open("output.txt", "a") as f:
                     f.write("3\n")
                 # update_data_fileを呼び出す
-                cooling_threshold, heating_threshold, status = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, 0, location, directory_paths)
+                cooling_threshold, heating_threshold, status, aircon_instructions = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, 0, location, directory_paths)
                 file_manager.update_data_file(room_temperature, cooling_threshold, heating_threshold, data_received, number_of_people, directory_paths)
 
         # 20秒待機

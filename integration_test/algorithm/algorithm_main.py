@@ -19,6 +19,7 @@ def process_data(room_temperature, num_people, long_sleeve_count, short_sleeve_c
     weather_api_key = "69c99674130d87692972008a78fff1e0"  # OpenWeatherMap APIキーを設定
     long_sleeve_rate = 1.0  # 長袖の温度変化率を設定
     short_sleeve_rate = 0.5  # 半袖の温度変化率を設定
+    aircon_instructions = 1 # エアコンにやらせる指示, #0 = 冷房, 1 = 何もしない, 2 = 暖房
 
     try:
         # 各ディレクトリのデータを読み取る
@@ -60,12 +61,15 @@ def process_data(room_temperature, num_people, long_sleeve_count, short_sleeve_c
 
             # 外気温が冷房の基準温度以上か暖房の基準温度以下かを確認して該当ファイルを表示
             if weather_info['temperature'] >= cooling_threshold:
+                aircon_instructions = 0
                 print("冷房")
                 read_and_display_file(os.path.join(directory_paths["Cold"], "data.txt"))
             elif weather_info['temperature'] <= heating_threshold:
+                aircon_instructions = 2
                 print("暖房")
                 read_and_display_file(os.path.join(directory_paths["Hot"], "data.txt"))
             else:
+                aircon_instructions = 1
                 print("冷房も暖房も必要ありません")
 
             # 部屋の温度を表示
@@ -83,8 +87,8 @@ def process_data(room_temperature, num_people, long_sleeve_count, short_sleeve_c
             print("気温と天気を取得できませんでした。")
             status = 0  # デフォルトの状態を unknown とする
 
-        return cooling_threshold, heating_threshold, status
+        return cooling_threshold, heating_threshold, status, aircon_instructions
 
     except ValueError as e:
         print(e)
-        return None, None, status
+        return None, None, status, aircon_instructions
