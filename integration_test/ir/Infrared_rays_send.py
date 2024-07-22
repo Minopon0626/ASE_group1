@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-def send_ir_command(signal_name):
+def send_ir_command(signal_name = "light:on"):
     """
     cgirツールを使用して指定された赤外線コマンドを送信します。
     
