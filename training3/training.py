@@ -23,4 +23,4 @@ results = model('/home/hisui/academic-1/ASE_group1/training2/hansode_91.jpg')
 results.show()
 
 # トレーニング済みモデルの保存
-model.save('hansode2_yolov8_model.pt')
+model.save('hansode3_yolov8_model.pt')
