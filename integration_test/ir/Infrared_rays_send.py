@@ -14,9 +14,15 @@ def send_ir_command(signal_name="light:on"):
     # code.jsonのパスを生成
     json_path = os.path.join(script_dir, "code.json")
 
+    #過去のコマンド
+    command = ["cgir", "send", "light:on", "-g", "21", "-f", json_path]
+    print("うまくいっていたコマンド:", " ".join(command))
+
     # 赤外線コマンドを送信するためのコマンドを定義
     command = ["cgir", "send", signal_name, "-g", "21", "-f", json_path]
-    
+
+    print("実行するコマンド:", " ".join(command))
+
     # subprocess.run()を使用して、コマンドを実行
     result = subprocess.run(command, capture_output=True, text=True)
 
