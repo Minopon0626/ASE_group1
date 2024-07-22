@@ -1,9 +1,11 @@
 import subprocess
 import os
 
-def send_ir_command():
+def send_ir_command(signal_name):
     """
-    cgirツールを使用して赤外線コマンドを送信します。
+    cgirツールを使用して指定された赤外線コマンドを送信します。
+    
+    :param signal_name: 送信する信号の名前（例: "light:on"）
     """
     # スクリプトのディレクトリを取得
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -12,7 +14,7 @@ def send_ir_command():
     json_path = os.path.join(script_dir, "code.json")
 
     # 赤外線コマンドを送信するためのコマンドを定義
-    command = ["cgir", "send", "light:on", "-g", "21", "-f", json_path]
+    command = ["cgir", "send", signal_name, "-g", "21", "-f", json_path]
     
     # subprocess.run()を使用して、コマンドを実行
     result = subprocess.run(command, capture_output=True, text=True)
@@ -22,4 +24,4 @@ def send_ir_command():
     print("標準エラー:", result.stderr)
 
 if __name__ == "__main__":
-    send_ir_command()
+    send_ir_command("light:on")
