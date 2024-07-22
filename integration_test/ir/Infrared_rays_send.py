@@ -18,6 +18,8 @@ def send_ir_command(signal_name="light:on"):
     command = ["cgir", "send", "light:on", "-g", "21", "-f", json_path]
     print("うまくいっていたコマンド:", " ".join(command))
 
+    command = 0
+
     # 赤外線コマンドを送信するためのコマンドを定義
     command = ["cgir", "send", signal_name, "-g", "21", "-f", json_path]
 
