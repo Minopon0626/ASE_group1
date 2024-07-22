@@ -30,8 +30,8 @@ def capture_and_process_images():
     create_or_find_output.create_or_find_output_dir(current_dir, log_dir)
 
     try:
-        person_model = YOLO('yolov8s_ncnn_model') #yolo_common.load_yolo_model('yolov8s')
-        sleeve_model = YOLO('best_ncnn_model') #yolo_common.load_yolo_model('best')
+        person_model = YOLO('models/yolov8s_ncnn_model') #yolo_common.load_yolo_model('yolov8s')
+        sleeve_model = YOLO('models/best_ncnn_model') #yolo_common.load_yolo_model('best')
     except FileNotFoundError as e:
         print(e)
         return
