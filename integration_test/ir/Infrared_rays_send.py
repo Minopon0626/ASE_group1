@@ -1,19 +1,25 @@
-"""
-赤外線のsendするモジュール
-"""
-
-import subprocess  # subprocessモジュールをインポートして、サブプロセスを管理する
+import subprocess
+import os
 
 def send_ir_command():
     """
     cgirツールを使用して赤外線コマンドを送信します。
     """
+    # スクリプトのディレクトリを取得
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # code.jsonのパスを生成
+    json_path = os.path.join(script_dir, "code.json")
+
     # 赤外線コマンドを送信するためのコマンドを定義
-    command = ["cgir", "send", "light:on", "-g", "21"]
-    # subprocess.call()を使用して、コマンドを実行
-    subprocess.call(command)
+    command = ["cgir", "send", "light:on", "-g", "21", "-f", json_path]
+    
+    # subprocess.run()を使用して、コマンドを実行
+    result = subprocess.run(command, capture_output=True, text=True)
+
+    # コマンドの標準出力と標準エラーを表示
+    print("標準出力:", result.stdout)
+    print("標準エラー:", result.stderr)
 
 if __name__ == "__main__":
-    # このブロックはスクリプトが直接実行された場合にのみ実行されます
     send_ir_command()
-    # send_ir_command()関数を呼び出して、赤外線コマンドを送信する
