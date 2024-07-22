@@ -4,7 +4,7 @@ import sys
 import cv2
 import threading
 import queue
-import ultralytics from YOLO
+from ultralytics import YOLO
 
 # 'algorithm'ディレクトリをシステムパスに追加
 sys.path.append(os.path.join(os.path.dirname(__file__), 'algorithm'))
