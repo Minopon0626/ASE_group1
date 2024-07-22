@@ -15,13 +15,13 @@ def send_ir_command(signal_name="light:on"):
     json_path = os.path.join(script_dir, "code.json")
 
     #過去のコマンド
-    command = ["cgir", "send", "light:on", "-g", "21", "-f", json_path]
+    command = ["cgir", "send", "light:on", "-g", "21"]
     print("うまくいっていたコマンド:", " ".join(command))
 
     command = 0
 
     # 赤外線コマンドを送信するためのコマンドを定義
-    command = ["cgir", "send", signal_name, "-g", "21", "-f", json_path]
+    command = ["cgir", "send", signal_name, "-g", "21"]
 
     print("実行するコマンド:", " ".join(command))
 
