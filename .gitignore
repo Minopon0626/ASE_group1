@@ -12,4 +12,5 @@ __pycache__/
 # image_Conversionディレクトリのinputとoutputディレクトリの中身を無視
 image_Conversion/input/*
 image_Conversion/output/*
+training3/myenv/
 # gitにあげるファイルの変更
