@@ -85,23 +85,24 @@ def capture_and_process_images():
             # 20.25, 20.0, 2, 0
 
             print(f"aircon_condition:{aircon_condition}")
+            # aircon_condition = 0
 
             if aircon_instructions == 0:
                 #冷房かける
                 print(f"アルゴリズムはエアコンを冷房をつけると判断")
-                if aircon_condition != 0:
+                if aircon_condition == 0:
                     Infrared_rays_send.send_ir_command()
                     print('冷房かける')
             if aircon_instructions == 1:
                 #何もしない
-                if aircon_condition != 0:
+                if aircon_condition == 0:
                     Infrared_rays_send.send_ir_command()
                     print('エアコン停止信号送信')
                 aircon_condition = 0
                 print('エアコン停止')
             if aircon_instructions == 2:
                 #暖房かける
-                if aircon_condition != 0:
+                if aircon_condition == 0:
                     Infrared_rays_send.send_ir_command()
                     print('暖房かける')
 
