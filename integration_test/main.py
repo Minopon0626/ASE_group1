@@ -26,6 +26,9 @@ log_dir = 'log'
 current_dir = '.'
 
 def capture_and_process_images():
+
+    aircon_condition = 0 # 0のときはエアコンは何もつけていない。1であればエアコンは稼働中
+
     # outputディレクトリが存在しない場合は作成する
     create_or_find_output.create_or_find_output_dir(current_dir, log_dir)
 
@@ -79,16 +82,23 @@ def capture_and_process_images():
             
             if aircon_instructions == 0:
                 #冷房かける
-                print('冷房かける')
+                if aircon_condition != 0:
+                    Infrared_rays_send.send_ir_command()
+                    print('冷房かける')
             if aircon_instructions == 1:
                 #何もしない
+                if aircon_condition != 0:
+                    Infrared_rays_send.send_ir_command()
+                    print('エアコン停止信号送信')
+                aircon_condition = 0
                 print('エアコン停止')
             if aircon_instructions == 2:
                 #暖房かける
-                print('暖房かける')
-            
+                if aircon_condition != 0:
+                    Infrared_rays_send.send_ir_command()
+                    print('冷房かける')
 
-            Infrared_rays_send.send_ir_command()
+            #Infrared_rays_send.send_ir_command()
         
         # handle_switches からのデータをチェック
         if not shared_queue.empty():
