@@ -21,6 +21,9 @@ def process_data(room_temperature, num_people, long_sleeve_count, short_sleeve_c
     short_sleeve_rate = 0.5  # 半袖の温度変化率を設定
     aircon_instructions = 1 # エアコンにやらせる指示, #0 = 冷房, 1 = 何もしない, 2 = 暖房
 
+    if num_people == 0:
+        return None, None, None, 1
+
     try:
         # 各ディレクトリのデータを読み取る
         cold_data = read_data_file(os.path.join(directory_paths["Cold"], "data.txt"))
