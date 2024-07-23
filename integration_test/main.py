@@ -76,10 +76,12 @@ def capture_and_process_images():
             print(f"検出された人数: {number_of_people}")
 
             cooling_threshold, heating_threshold, status, aircon_instructions = algorithm_main.process_data(room_temperature, number_of_people, long_sleeve_count, short_sleeve_count, 0, location, directory_paths)
-            
+
             # if cooling_threshold is not None and heating_threshold is not None:
             #     file_manager.update_data_file(room_temperature, cooling_threshold, heating_threshold, status, number_of_people, directory_paths)
-            
+
+            print(f"エアコン指示前:cooling_threshold : {cooling_threshold}, heating_threshold : {heating_threshold}, status : {status}, aircon_instructions{aircon_instructions}")
+
             if aircon_instructions == 0:
                 #冷房かける
                 if aircon_condition != 0:
@@ -96,7 +98,7 @@ def capture_and_process_images():
                 #暖房かける
                 if aircon_condition != 0:
                     Infrared_rays_send.send_ir_command()
-                    print('冷房かける')
+                    print('暖房かける')
 
             #Infrared_rays_send.send_ir_command()
         

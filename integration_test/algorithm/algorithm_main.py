@@ -62,15 +62,15 @@ def process_data(room_temperature, num_people, long_sleeve_count, short_sleeve_c
             # 外気温が冷房の基準温度以上か暖房の基準温度以下かを確認して該当ファイルを表示
             if weather_info['temperature'] >= cooling_threshold:
                 aircon_instructions = 0
-                print("冷房")
+                print("参照:冷房")
                 read_and_display_file(os.path.join(directory_paths["Cold"], "data.txt"))
             elif weather_info['temperature'] <= heating_threshold:
                 aircon_instructions = 2
-                print("暖房")
+                print("参照:暖房")
                 read_and_display_file(os.path.join(directory_paths["Hot"], "data.txt"))
             else:
                 aircon_instructions = 1
-                print("冷房も暖房も必要ありません")
+                print("参照:冷房も暖房も必要ありません")
 
             # 部屋の温度を表示
             if room_temperature > weather_info['temperature']:

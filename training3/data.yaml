@@ -2,5 +2,5 @@ names:
 - hansode
 - nagasode
 nc: 2
-train: /home/momiyama/academic-1/ASE_group1/training3/images/train
-val: /home/momiyama/academic-1/ASE_group1/training3/images/val
+train: D:\vscodeWorkSpace\ASE_group1\training3\images\train
+val: D:\vscodeWorkSpace\ASE_group1\training3\images\val
