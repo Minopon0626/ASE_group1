@@ -82,8 +82,13 @@ def capture_and_process_images():
 
             print(f"エアコン指示前:cooling_threshold : {cooling_threshold}, heating_threshold : {heating_threshold}, status : {status}, aircon_instructions{aircon_instructions}")
 
+            # 20.25, 20.0, 2, 0
+
+            print(f"aircon_condition:{aircon_condition}")
+
             if aircon_instructions == 0:
                 #冷房かける
+                print(f"アルゴリズムはエアコンを冷房をつけると判断")
                 if aircon_condition != 0:
                     Infrared_rays_send.send_ir_command()
                     print('冷房かける')
